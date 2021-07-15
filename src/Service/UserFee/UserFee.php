@@ -44,7 +44,9 @@ class UserFee extends UserFeeAbstract {
         try {
 
             $fee = (new AccountTransaction($data->transaction, $this->exchange, $this->repository))->transaction->fee( $data->date, $data->user_id, $data->account_type, $data->amount, $data->currency);
+            
             $this->repository->setUserWithdravals($data->user_id, $data->date, $data->amount, $data->currency);
+
             $fee = ceil(($fee * 100))/100;
 
             $money = number_format($fee, 2, ',', ' ');

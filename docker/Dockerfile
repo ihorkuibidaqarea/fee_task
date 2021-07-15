@@ -24,6 +24,14 @@ RUN apt-get update && apt-get install -y \
 RUN pecl install xdebug-2.9.7 \
     && docker-php-ext-enable xdebug
 
+RUN { \
+    echo 'zend_extension=xdebug.so'; \
+    echo 'xdebug.remote_enable=1'; \
+    echo "xdebug.remote_autostart=1"; \
+    echo 'xdebug.remote_host=host.docker.internal'; \
+    echo 'xdebug.remote_port=9001'; \
+    } > /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 

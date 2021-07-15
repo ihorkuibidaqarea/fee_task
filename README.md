@@ -4,3 +4,4 @@
 4) run   'docker-compose up -d'   in terminal
 5) run   'docker-compose exec app  bash'   in terminal
 6) run   'php public/index.php' in terminal
+7) run tests   type in terminal  'docker-compose exec app  php vendor/phpunit/phpunit/phpunit' and press enter
