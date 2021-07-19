@@ -43,7 +43,7 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface {
 
     private function getAmmountForFee($operation_date, $user_id, $amount, $currency){
 
-        $userWithdrawals = $this->repository->getLastWeekUserWithdravals( $user_id );
+        $userWithdrawals = $this->repository->getLastWeekWithdravals( $user_id );
         
         if( is_array( $userWithdrawals ) ){
                                     

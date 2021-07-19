@@ -24,14 +24,14 @@
             $respCode = $response->getStatusCode(); 
             $data = json_decode($response->getBody()->getContents(), true);
             
-            if( $respCode === 200 && isset( $data['rates'] ) && is_array( $data['rates'] ) ){
-
+            if (
+                $respCode === 200
+                && isset( $data['rates'] )
+                && is_array( $data['rates'] ) 
+            ){
                 $this->exchangeRate = $data['rates'];
-
             } else {
-
-                throw new \Exception('Invalid respoce from Exchangeratesapi'); 
-
+                throw new \Exception('Invalid respoce from Exchangeratesapi');
             }
             
         }
@@ -40,20 +40,16 @@
         public function moneyExchange( string $amount, string $currency ){
 
             
-            if( SELF::MAIN_CURRENCY === $currency ){
-
+            if (SELF::MAIN_CURRENCY === $currency){
                 return [ 'success' => true, 'amount' => $amount ];
+            } else {
 
-            } else { 
-
-                if( isset($this->exchangeRate[''.$currency.'']) ){
+                if (isset($this->exchangeRate[''.$currency.''])){
 
                     $exchange =  $this->math->multiply( (string) $amount, (string) $this->exchangeRate[''.$currency.''] );
                     
-                    if( $this->math->compare($exchange, '0') > 0){
-
+                    if ($this->math->compare($exchange, '0') > 0){
                         return [ 'success' => true, 'amount' =>  $exchange ];
-
                     }
                 } 
                
@@ -67,17 +63,17 @@
 
         public function reverseMoneyExchange( string $amount, string $currency ){
             
-            if( SELF::MAIN_CURRENCY === $currency ){
+            if (SELF::MAIN_CURRENCY === $currency){
 
-                return [ 'success' => true, 'amount' => $amount ];
+                return ['success' => true, 'amount' => $amount];
 
             } else {
 
-                if( isset($this->exchangeRate[''.$currency.'']) ){
+                if (isset($this->exchangeRate[''.$currency.''])){
 
-                    $exchange =  $this->math->divide( (string) $amount, (string) $this->exchangeRate[''.$currency.''] );
+                    $exchange = $this->math->divide( (string) $amount, (string) $this->exchangeRate[''.$currency.''] );
                     
-                    if( $this->math->compare($exchange, '0') > 0){
+                    if ($this->math->compare($exchange, '0') > 0){
                         return [ 'success' => true, 'amount' =>  $exchange ];
                     }
                 } 

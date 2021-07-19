@@ -8,12 +8,15 @@ use Src\Service\FeeCalculation\AccountTransaction;
 use Src\Service\FileParser\FileParserAbstract;
 use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use Src\Repository\Interfaces\UserRepositoryAbstract;
+use Src\Service\Math\Math;
 
 class UserFee extends UserFeeAbstract {
 
     private $data;
     private $exchange;
     private $repository;
+    private $math;
+    private const SCALE = 2;
    
 
     public function __construct( FileParserAbstract $parser, ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository ){
@@ -21,37 +24,53 @@ class UserFee extends UserFeeAbstract {
         $this->data = $parser->data();
         $this->exchange = $exchange;
         $this->repository = $repository; 
-        
+        $this->math = new Math( self::SCALE );
     }
 
-    public function getFee(){
+    public function getFee(){     
         
-        $fees_array = [];
+        $fee = []; 
 
-        foreach( $this->data as $transaction){
+        foreach( $this->data as $operation){
             
-            $fees_array[] = $this->calculateFee($transaction);
+            $fee[] = $this->calculateFee($operation);
 
         }
-       
-        return $fees_array;
 
+        return $fee;
+       
     }
 
     
-    private function calculateFee( $data ){
+    private function calculateFee( $operation ){
 
         try {
 
-            $fee = (new AccountTransaction($data->transaction, $this->exchange, $this->repository))->transaction->fee( $data->date, $data->user_id, $data->account_type, $data->amount, $data->currency);
+            $fee = (new AccountTransaction($operation->getTransaction(), $this->exchange, $this->repository))
+                        ->transaction
+                        ->fee( 
+                            $operation->getDate(), 
+                            $operation->getUserId(), 
+                            $operation->getAccountType(), 
+                            $operation->getAmount(), 
+                            $operation->getCurrency()
+                        );
             
-            $this->repository->setUserWithdravals($data->user_id, $data->date, $data->amount, $data->currency);
+            $this->repository->setUserWithdravals(
+                                                    $operation->getUserId(), 
+                                                    $operation->getDate(), 
+                                                    $operation->getAmount(), 
+                                                    $operation->getCurrency()
+                                                );
 
-            $fee = ceil(($fee * 100))/100;
+            $fee = (float) $this->math->divide(
+                                       (string) ceil($this->math->multiply((string) $fee, '100')),
+                                        '100'
+                                    );
 
             $money = number_format($fee, 2, ',', ' ');
            
-            return $data->currency .' - '. $money;
+            return $operation->getCurrency() .' - '. $money;
 
         } catch (\Exception $e) {
 

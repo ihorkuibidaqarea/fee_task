@@ -2,5 +2,4 @@ vendor/
 .vscode/
 docker/nginx
 phpunit.xml
-composer.lock
 bin/

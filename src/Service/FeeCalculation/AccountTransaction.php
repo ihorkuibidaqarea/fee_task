@@ -32,3 +32,11 @@ class AccountTransaction extends AccountTransactionAbstract {
     }
      
 }
+
+
+
+// case 'withdraw':
+//     $this->transaction = app()->get('WithdrawTransaction');
+//     break;
+// case 'deposit':
+//     $this->transaction = app()->get('DepositTransaction');
