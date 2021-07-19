@@ -11,7 +11,8 @@ use Src\Repository\UserRepository;
 use Src\Service\Math\Math;
 
 
-class BusinesWithdrawTransaction implements FeeCalculationInterface {
+class BusinesWithdrawTransaction implements FeeCalculationInterface
+{
 
     private const FEE  = '0.005';
     private const SCALE = 3;
@@ -50,12 +51,12 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface {
             }
         }  
 
-        $allowedAmountInCurrency = $this->exchange->moneyExchange( self::ALLOWED_AMOUNT, $currency);
+        $allowedAmountInCurrency = $this->exchange->moneyExchange(self::ALLOWED_AMOUNT, $currency);
 
         if ($allowedAmountInCurrency->success) {
-            $FirstRequestAllowedAmount = $this->math->subtract( $amount, $allowedAmountInCurrency->amount ); 
+            $FirstRequestAllowedAmount = $this->math->subtract($amount, $allowedAmountInCurrency->amount); 
 
-            if ($this->math->compare( (string) $FirstRequestAllowedAmount, '0') > 0) {
+            if ($this->math->compare((string) $FirstRequestAllowedAmount, '0') > 0) {
                 return $FirstRequestAllowedAmount; 
             } 
             return '0';  
@@ -89,9 +90,9 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface {
     private function feeDiffernce($userWithdrawals, $amount, $currency)
     {        
         $withdrawed = $this->wthdrawedAmountInEuro($userWithdrawals);
-        $difference =  $this->math->subtract((string) self::ALLOWED_AMOUNT, (string) $withdrawed );
+        $difference =  $this->math->subtract((string) self::ALLOWED_AMOUNT, (string) $withdrawed);
 
-        if ($this->math->compare( $difference, '0') <= 0) {
+        if ($this->math->compare($difference, '0') <= 0) {
             return $amount;
         } else {
            $allowedInCurrency = $this->exchange->moneyExchange($difference, $currency);           

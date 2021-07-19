@@ -7,7 +7,8 @@ namespace Src\Repository;
 use Src\Repository\Interfaces\UserRepositoryAbstract;
 use Src\Entity\Transaction;
 
-class UserRepository extends UserRepositoryAbstract {
+class UserRepository extends UserRepositoryAbstract
+{
 
     public $transactions;
 

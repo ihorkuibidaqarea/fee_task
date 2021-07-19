@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Src\Entity;
 
-class ExchangeResponse {
+class ExchangeResponse
+{
 
-   
-    public $success;
     public $amount;
-     
+    public $success;
+         
 
-    public function __construct($success, $amount)
+    public function __construct($amount, $success = true)
     {
-        $this->success = $success;
         $this->amount = $amount;
+        $this->success = $success;        
     }
 
 }

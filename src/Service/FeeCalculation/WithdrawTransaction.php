@@ -13,7 +13,8 @@ use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use Src\Repository\Interfaces\UserRepositoryAbstract;
 
 
-class WithdrawTransaction implements FeeCalculationInterface {
+class WithdrawTransaction implements FeeCalculationInterface
+{
 
     private $exchange;
     private $repository;
@@ -26,8 +27,8 @@ class WithdrawTransaction implements FeeCalculationInterface {
         
        
  
-    public function fee(string $operation_date, $user_id, string $user_type, string $amount, string $currency){
-
+    public function fee(string $operation_date, $user_id, string $user_type, string $amount, string $currency)
+    {
         switch ($user_type) {
             case 'business':
                 $fee = (new BusinesWithdrawTransaction($this->exchange, $this->repository))
@@ -42,8 +43,7 @@ class WithdrawTransaction implements FeeCalculationInterface {
         }
   
         throw new \Exception('Something went wrong with transaction'); 
+    } 
+    
 
-    }
-
-        
 }

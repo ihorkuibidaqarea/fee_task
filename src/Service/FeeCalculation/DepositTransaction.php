@@ -8,14 +8,15 @@ use Src\Service\FeeCalculation\Interfaces\FeeCalculationInterface;
 use Src\Service\Math\Math;
 use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
 
-class DepositTransaction implements FeeCalculationInterface {
+class DepositTransaction implements FeeCalculationInterface
+{
 
     private const FEE  = '0.0003';
     private const SCALE  = 5;
     public $math;
     private $exchange;
 
-    
+
     public function __construct(ChangeMoneyInterface $exchange)
     {        
         $this->exchange = $exchange;

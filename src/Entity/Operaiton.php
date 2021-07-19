@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Src\Entity;
 
-class Operaiton {
+class Operaiton
+{
 
     public $date;
     public $user_id;
@@ -14,7 +15,8 @@ class Operaiton {
     public $currency;
      
 
-    public function __construct( $date, $user_id, $account_type, $transaction, $amount, $currency ){
+    public function __construct($date, $user_id, $account_type, $transaction, $amount, $currency)
+    {
 
         $this->date = $date;
         $this->user_id = $user_id;
@@ -27,44 +29,38 @@ class Operaiton {
 
 
 
-    public function getDate(){
-
+    public function getDate()
+    {
         return $this->date;
-
     }
 
 
-    public function getUserId(){
-
+    public function getUserId()
+    {
         return $this->user_id;
-
     }
 
 
-    public function getAccountType(){
-
+    public function getAccountType()
+    {
         return $this->account_type;
-
     }
 
-    public function getTransaction(){
-
+    public function getTransaction()
+    {
         return $this->transaction;
-
     }
 
 
-    public function getAmount(){
-
+    public function getAmount()
+    {
         return $this->amount;
-
     }
 
 
-    public function getCurrency(){
-
+    public function getCurrency()
+    {
         return $this->currency;
-
     }
 
 

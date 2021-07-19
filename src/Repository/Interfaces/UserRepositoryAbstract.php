@@ -2,19 +2,20 @@
 
 namespace Src\Repository\Interfaces;
 
-abstract class UserRepositoryAbstract {
+abstract class UserRepositoryAbstract
+{
 
     private $transactions;
-    // private $user_id;
 
-    public function __construct(){
-
+    public function __construct()
+    {
         $this->transactions = [];
-
     }
 
-    public function getUserWithdravals( int $user_id ){}
 
-    public function setUserWithdravals( int $user_id, string $transaction_date, string $amount, string $currency){}
+    public function getUserWithdravals(int $user_id ){}
+    
+
+    public function setUserWithdravals(int $user_id, string $transaction_date, string $amount, string $currency) {}
 
 }

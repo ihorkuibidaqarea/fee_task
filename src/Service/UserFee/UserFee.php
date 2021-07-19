@@ -10,8 +10,8 @@ use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use Src\Repository\Interfaces\UserRepositoryAbstract;
 use Src\Service\Math\Math;
 
-class UserFee extends UserFeeAbstract {
-
+class UserFee extends UserFeeAbstract
+{
     private $data;
     private $exchange;
     private $repository;
@@ -19,33 +19,30 @@ class UserFee extends UserFeeAbstract {
     private const SCALE = 2;
    
 
-    public function __construct( FileParserAbstract $parser, ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository ){
-
+    public function __construct(FileParserAbstract $parser, ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository)
+    {
         $this->data = $parser->data();
         $this->exchange = $exchange;
         $this->repository = $repository; 
-        $this->math = new Math( self::SCALE );
+        $this->math = new Math(self::SCALE);
     }
 
-    public function getFee(){     
-        
+    public function getFee()
+    {        
         $fee = []; 
 
-        foreach( $this->data as $operation){
-            
+        foreach ($this->data as $operation) {            
             $fee[] = $this->calculateFee($operation);
-
         }
 
-        return $fee;
-       
+        return $fee;       
     }
 
     
-    private function calculateFee( $operation ){
+    private function calculateFee($operation)
+    {
 
         try {
-
             $fee = (new AccountTransaction($operation->getTransaction(), $this->exchange, $this->repository))
                         ->transaction
                         ->fee( 
@@ -57,11 +54,11 @@ class UserFee extends UserFeeAbstract {
                         );
             
             $this->repository->setUserWithdravals(
-                                                    $operation->getUserId(), 
-                                                    $operation->getDate(), 
-                                                    $operation->getAmount(), 
-                                                    $operation->getCurrency()
-                                                );
+                                                $operation->getUserId(), 
+                                                $operation->getDate(), 
+                                                $operation->getAmount(), 
+                                                $operation->getCurrency()
+                                );
 
             $fee = (float) $this->math->divide(
                                        (string) ceil($this->math->multiply((string) $fee, '100')),

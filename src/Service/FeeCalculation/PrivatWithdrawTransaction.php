@@ -11,7 +11,8 @@ use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use Src\Repository\Interfaces\UserRepositoryAbstract;
 
 
-class PrivatWithdrawTransaction implements FeeCalculationInterface {
+class PrivatWithdrawTransaction implements FeeCalculationInterface
+{
 
     private const FEE  = '0.003';
     private const SCALE = 5;
@@ -20,11 +21,11 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface {
     private $exchange;
     private $repository;
 
-    public function __construct( ChangeMoneyInterface $exchange,  UserRepositoryAbstract $repository )
+    public function __construct(ChangeMoneyInterface $exchange,  UserRepositoryAbstract $repository)
     {
         $this->exchange = $exchange;
         $this->repository = $repository;
-        $this->math = new Math( self::SCALE );
+        $this->math = new Math(self::SCALE);
     }
     
 
@@ -39,7 +40,7 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface {
 
     private function getAmmountForFee($operation_date, $user_id, $amount, $currency)
     {
-        $userWithdrawals = $this->repository->getLastWeekWithdravals( $user_id );  
+        $userWithdrawals = $this->repository->getLastWeekWithdravals($user_id);  
 
         if (is_array($userWithdrawals)) {                                    
             if (count( $userWithdrawals ) > 2) {
@@ -50,12 +51,12 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface {
             }
         }  
 
-        $allowedAmountInCurrency = $this->exchange->moneyExchange( self::ALLOWED_AMOUNT, $currency);
+        $allowedAmountInCurrency = $this->exchange->moneyExchange(self::ALLOWED_AMOUNT, $currency);
 
         if ($allowedAmountInCurrency->success) {
-            $FirstRequestAllowedAmount = $this->math->subtract( $amount, $allowedAmountInCurrency->amount); 
+            $FirstRequestAllowedAmount = $this->math->subtract($amount, $allowedAmountInCurrency->amount); 
 
-            if ($this->math->compare( (string) $FirstRequestAllowedAmount, '0') > 0) {
+            if ($this->math->compare((string) $FirstRequestAllowedAmount, '0') > 0) {
                 return $FirstRequestAllowedAmount; 
             } 
             return '0';  

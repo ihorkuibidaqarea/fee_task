@@ -12,7 +12,8 @@ use Src\Service\FeeCalculation\{
 use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use Src\Repository\Interfaces\UserRepositoryAbstract;
 
-class AccountTransaction extends AccountTransactionAbstract {
+class AccountTransaction extends AccountTransactionAbstract
+{
 
     public $transaction;
    

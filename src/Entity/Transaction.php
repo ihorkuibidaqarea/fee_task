@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Src\Entity;
 
-class Transaction {
+class Transaction
+{
 
     public $date;
     public $amount;

@@ -9,15 +9,15 @@
     use Src\Entity\ExchangeResponse;
     
 
-    class ChangeMoney implements ChangeMoneyInterface {
-
+    class ChangeMoney implements ChangeMoneyInterface
+    {
         private const MAIN_CURRENCY  = 'EUR';
         private const SCALE = 5;
         private $exchangeRate;
         private $math;
 
-        public function __construct(  ){
-
+        public function __construct()
+        {
             $this->math = new Math(self::SCALE);
 
             $client = new \GuzzleHttp\Client();
@@ -27,9 +27,9 @@
             
             if (
                 $respCode === 200
-                && isset( $data['rates'] )
-                && is_array( $data['rates'] ) 
-            ){
+                && isset($data['rates'])
+                && is_array($data['rates']) 
+            ) {
                 $this->exchangeRate = $data['rates'];
             } else {
                 throw new \Exception('Invalid respoce from Exchangeratesapi');
@@ -38,42 +38,39 @@
         }
         
 
-        public function moneyExchange( string $amount, string $currency ){
 
-            
-            if (SELF::MAIN_CURRENCY === $currency){
-                return new ExchangeResponse(true, $amount);
+        public function moneyExchange(string $amount, string $currency)
+        {            
+            if (SELF::MAIN_CURRENCY === $currency) {
+                return new ExchangeResponse($amount);
             } else {
 
-                if (isset($this->exchangeRate[''.$currency.''])){
-
-                    $exchange =  $this->math->multiply( (string) $amount, (string) $this->exchangeRate[''.$currency.''] );
+                if (isset($this->exchangeRate[$currency])) {
+                    $exchange =  $this->math->multiply( (string) $amount, (string) $this->exchangeRate[$currency] );
                     
-                    if ($this->math->compare($exchange, '0') > 0){                        
-                        return new ExchangeResponse(true, $exchange);
+                    if ($this->math->compare($exchange, '0') > 0) {                        
+                        return new ExchangeResponse($exchange);
                     }
-                } 
-               
-                throw new \Exception('Currency not found');
-                
+                }                
+                throw new \Exception('Currency not found');                
             }            
 
         }
 
 
 
-        public function reverseMoneyExchange( string $amount, string $currency ){
-            
-            if (SELF::MAIN_CURRENCY === $currency){
-                return new ExchangeResponse(true, $amount);
+        public function reverseMoneyExchange(string $amount, string $currency)
+        {            
+            if (SELF::MAIN_CURRENCY === $currency) {
+                return new ExchangeResponse($amount);
             } else {
 
-                if (isset($this->exchangeRate[''.$currency.''])){
+                if (isset($this->exchangeRate[$currency])) {
 
-                    $exchange = $this->math->divide( (string) $amount, (string) $this->exchangeRate[''.$currency.''] );
+                    $exchange = $this->math->divide( (string) $amount, (string) $this->exchangeRate[$currency]);
                     
-                    if ($this->math->compare($exchange, '0') > 0){                        
-                        return new ExchangeResponse(true, $exchange);
+                    if ($this->math->compare($exchange, '0') > 0) {                        
+                        return new ExchangeResponse($exchange);
                     }
                 } 
                 
