@@ -10,6 +10,7 @@ use Src\Repository\UserRepository;
 use Src\Service\UserFee\UserFee;
 use Src\Service\UserFee\UserFeeAbstract;
 use PHPUnit\Framework\TestCase;
+use Src\Entity\Operaiton;
 
 class FeeTest extends TestCase
 {   
@@ -50,11 +51,11 @@ class FeeTest extends TestCase
         return [
             [
                 [
-                    (object) ['date' => "$fiveDaysAgo",'user_id' => 1, 'account_type' => 'private', 'transaction' => 'withdraw', 'amount' => '1200.00', 'currency' => 'EUR'],
-                    (object) ['date' => "$fiveDaysAgo", 'user_id' => 1, 'account_type' => 'private', 'transaction' => 'withdraw', 'amount' => '1000.00', 'currency' => 'EUR'],
-                    (object) ['date' => "$threeDaysAgo", 'user_id' => 1, 'account_type' =>'private', 'transaction' => 'withdraw', 'amount' => '1000.00', 'currency' => 'EUR'],
-                    (object) ['date' => "$oneDayAgo", 'user_id' => 1, 'account_type' => 'private', 'transaction' => 'deposit', 'amount' => '200.00', 'currency' => 'EUR'],
-                    (object) ['date' => "$oneDayAgo", 'user_id' => 2, 'account_type' => 'business', 'transaction' => 'withdraw', 'amount' => '900.00', 'currency' => 'EUR']
+                    new Operaiton ($fiveDaysAgo, 1, 'private', 'withdraw', '1200.00', 'EUR'),
+                    new Operaiton ($fiveDaysAgo, 1, 'private', 'withdraw', '1000.00', 'EUR'),
+                    new Operaiton ($threeDaysAgo, 1, 'private', 'withdraw', '1000.00', 'EUR'),
+                    new Operaiton ($oneDayAgo, 1, 'private', 'deposit', '200.00', 'EUR'),
+                    new Operaiton ($oneDayAgo, 2, 'business', 'withdraw', '900.00', 'EUR')
                 ],
                 ["EUR - 0,60", "EUR - 3,00", "EUR - 3,00", "EUR - 0,06", "EUR - 0,00"]
             ]

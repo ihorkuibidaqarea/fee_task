@@ -6,10 +6,8 @@ $app = require __DIR__. '/../bootstrap/container.php';
 
 try{   
 
-    $UserFee = $app->get('UserFee');
-    $fee = $UserFee->getFee();
-                   
-    var_dump( $fee );
+    $UserFee = $app->get('UserFee');                 
+    var_dump($UserFee->getFee());
     
 
 } catch (\Exception $e) {
