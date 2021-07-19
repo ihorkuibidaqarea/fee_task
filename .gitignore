@@ -1,5 +1,4 @@
 vendor/
 .vscode/
 docker/nginx
-phpunit.xml
 bin/
