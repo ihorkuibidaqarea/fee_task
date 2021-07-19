@@ -16,8 +16,8 @@ class AccountTransaction extends AccountTransactionAbstract {
 
     public $transaction;
    
-    public function __construct( $operation_type, ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository ){
-        
+    public function __construct($operation_type, ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository)
+    {        
         switch ($operation_type) {
             case 'withdraw':
                 $this->transaction =  new WithdrawTransaction($exchange, $repository);
@@ -28,15 +28,6 @@ class AccountTransaction extends AccountTransactionAbstract {
             default:
                 throw new \Exception('Invalid Transaction Type'); 
         }
-
     }
      
 }
-
-
-
-// case 'withdraw':
-//     $this->transaction = app()->get('WithdrawTransaction');
-//     break;
-// case 'deposit':
-//     $this->transaction = app()->get('DepositTransaction');

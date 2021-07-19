@@ -15,19 +15,18 @@ class DepositTransaction implements FeeCalculationInterface {
     public $math;
     private $exchange;
 
-    public function __construct(ChangeMoneyInterface $exchange){
-        
+    
+    public function __construct(ChangeMoneyInterface $exchange)
+    {        
         $this->exchange = $exchange;
         $this->math = new Math(self::SCALE);
-
     }
 
-    public function fee(  $operation_date, $user_id, $user_type, $amount, $currency ){        
-                
+
+    public function fee($operation_date, $user_id, $user_type, $amount, $currency)
+    {                
         $fee = $this->math->multiply( (string) $amount, self::FEE );
         return $fee;
-
     }
-
         
 }

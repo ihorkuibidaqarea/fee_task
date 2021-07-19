@@ -6,6 +6,7 @@
 
     use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
     use Src\Service\Math\Math;
+    use Src\Entity\ExchangeResponse;
     
 
     class ChangeMoney implements ChangeMoneyInterface {
@@ -41,15 +42,15 @@
 
             
             if (SELF::MAIN_CURRENCY === $currency){
-                return [ 'success' => true, 'amount' => $amount ];
+                return new ExchangeResponse(true, $amount);
             } else {
 
                 if (isset($this->exchangeRate[''.$currency.''])){
 
                     $exchange =  $this->math->multiply( (string) $amount, (string) $this->exchangeRate[''.$currency.''] );
                     
-                    if ($this->math->compare($exchange, '0') > 0){
-                        return [ 'success' => true, 'amount' =>  $exchange ];
+                    if ($this->math->compare($exchange, '0') > 0){                        
+                        return new ExchangeResponse(true, $exchange);
                     }
                 } 
                
@@ -64,17 +65,15 @@
         public function reverseMoneyExchange( string $amount, string $currency ){
             
             if (SELF::MAIN_CURRENCY === $currency){
-
-                return ['success' => true, 'amount' => $amount];
-
+                return new ExchangeResponse(true, $amount);
             } else {
 
                 if (isset($this->exchangeRate[''.$currency.''])){
 
                     $exchange = $this->math->divide( (string) $amount, (string) $this->exchangeRate[''.$currency.''] );
                     
-                    if ($this->math->compare($exchange, '0') > 0){
-                        return [ 'success' => true, 'amount' =>  $exchange ];
+                    if ($this->math->compare($exchange, '0') > 0){                        
+                        return new ExchangeResponse(true, $exchange);
                     }
                 } 
                 
