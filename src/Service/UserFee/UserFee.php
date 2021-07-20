@@ -43,8 +43,8 @@ class UserFee extends UserFeeAbstract
     {
 
         try {
-            $fee = (new AccountTransaction($operation->getTransaction(), $this->exchange, $this->repository))
-                        ->transaction
+            $fee = (new AccountTransaction($operation->getOperationName(), $this->exchange, $this->repository))
+                        ->getTransaction()
                         ->fee( 
                             $operation->getDate(), 
                             $operation->getUserId(), 

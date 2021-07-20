@@ -6,27 +6,23 @@ namespace Src\Entity;
 
 class Operaiton
 {
-
     public $date;
-    public $user_id;
-    public $account_type;
-    public $transaction;
+    public $userId;
+    public $accountType;
+    public $operation;
     public $amount;
     public $currency;
      
 
-    public function __construct($date, $user_id, $account_type, $transaction, $amount, $currency)
+    public function __construct($date, $userId, $accountType, $operation, $amount, $currency)
     {
-
         $this->date = $date;
-        $this->user_id = $user_id;
-        $this->account_type = $account_type;
-        $this->transaction = $transaction;
+        $this->userId = $userId;
+        $this->accountType = $accountType;
+        $this->operation = $operation;
         $this->amount = $amount;
         $this->currency = $currency;
-
     }
-
 
 
     public function getDate()
@@ -37,18 +33,18 @@ class Operaiton
 
     public function getUserId()
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
 
     public function getAccountType()
     {
-        return $this->account_type;
+        return $this->accountType;
     }
 
-    public function getTransaction()
+    public function getOperationName()
     {
-        return $this->transaction;
+        return $this->operation;
     }
 
 
@@ -62,6 +58,4 @@ class Operaiton
     {
         return $this->currency;
     }
-
-
 }

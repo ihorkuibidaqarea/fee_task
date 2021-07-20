@@ -9,46 +9,41 @@ use Src\Entity\Transaction;
 
 class UserRepository extends UserRepositoryAbstract
 {
-
     public $transactions;
 
-    public function getWithdravals($user_id){
 
-        $user_key = 'users_'.$user_id;
-        $userTransaction = $this->transactions[$user_key] ?? null;
+    public function getWithdravals($userId)
+    {
+        $userKey = 'users_'.$userId;
+        $userTransaction = $this->transactions[$userKey] ?? null;
 
         if( 
             $userTransaction 
             && is_array($userTransaction['withdrawals']) 
             && !empty($userTransaction['withdrawals']) 
-        ){
-           
+        ){           
             usort($userTransaction['withdrawals'], function ($element1, $element2) {
                 $datetime1 = strtotime($element1->date);
                 $datetime2 = strtotime($element2->date);
                 return $datetime2 - $datetime1;
-            }); 
-              
+            });
             return $userTransaction['withdrawals'];
         }
 
-        return null;
-        
+        return null;        
     }
 
-    public function getLastWeekWithdravals($user_id){
 
-        $allWithdrawals = $this->getWithdravals($user_id);
+    public function getLastWeekWithdravals($userId)
+    {
+        $allWithdrawals = $this->getWithdravals($userId);
 
-        if ($allWithdrawals && is_array($allWithdrawals)){
-            
-            $weekAgo = date('Y-m-d', strtotime("-1 week"));            
-            
+        if ($allWithdrawals && is_array($allWithdrawals)) {            
+            $weekAgo = date('Y-m-d', strtotime("-1 week"));
+
             $filteredWithdrawals = array_filter($allWithdrawals, function ($element1) use ($weekAgo) {
-
                 $datetime1 = strtotime($element1->date);
                 $datetime2 = strtotime($weekAgo);
-
                 if (($datetime1 - $datetime2) >= 0){
                     return true;
                 }
@@ -56,33 +51,26 @@ class UserRepository extends UserRepositoryAbstract
             });
 
             return $filteredWithdrawals;
-
         }
-
-        return $allWithdrawals;
-        
+        return $allWithdrawals;        
     }
 
-    public function setUserWithdravals($user_id, $transactionDate, $amount, $currency){
 
-        $user_key = 'users_'. $user_id;
-        $userTransaction = $this->transactions[$user_key] ?? null;        
+    public function setUserWithdravals($userId, $transactionDate, $amount, $currency)
+    {
+        $userKey = 'users_'. $userId;
+        $userTransaction = $this->transactions[$userKey] ?? null;
 
-        if ($userTransaction && is_array($userTransaction['withdrawals'])){
-            
+        if ($userTransaction && is_array($userTransaction['withdrawals'])) {            
             array_push( $userTransaction['withdrawals'] , new Transaction($transactionDate, $amount, $currency));
-            $this->transactions[$user_key] = $userTransaction;
-            
+            $this->transactions[$userKey] = $userTransaction;            
         } else {
-
-            $this->transactions[$user_key] = array( 
+            $this->transactions[$userKey] = array( 
                                                 'balance' => 10000,
                                                 'withdrawals' =>array(new Transaction($transactionDate, $amount, $currency)),
                                                 'deposits'=>array()
                                              );
-        }
-        
+        }        
         return $this->transactions;
     }
-    
 }

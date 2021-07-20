@@ -1,28 +1,45 @@
 <?php
 
+
+use Psr\Container\ContainerInterface;
+
+use Src\Service\UserFee\UserFeeAbstract;
+use Src\Service\UserFee\UserFee;
+use Src\Service\FileParser\FileParserAbstract;
+use Src\Service\FileParser\CsvParser;
+use Src\Repository\Interfaces\UserRepositoryAbstract;
+use Src\Repository\UserRepository;
+use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
+use Src\Service\Exchange\ChangeMoney;
+
+
 return [
-    'UserFee' => function (Psr\Container\ContainerInterface $c) {
-        return new Src\Service\UserFee\UserFee($c->get('CsvParser'), $c->get('ChangeMoney'), $c->get('UserRepository') );
+    UserFeeAbstract::class => DI\create(UserFee::class),
+    FileParserAbstract::class => DI\create(CsvParser::class),
+    UserRepositoryAbstract::class => DI\create(UserRepository::class),
+    UserFee::class => function (ContainerInterface $c) {
+        $df = new UserFee($c->get(CsvParser::class), $c->get(ChangeMoney::class), $c->get(UserRepository::class));
+       return $df;
     },
-    'CsvParser' => DI\factory(function() {
-        return new Src\Service\FileParser\CsvParser('transaction.csv');
+    CsvParser::class => DI\factory(function() {
+       return new CsvParser('transaction.csv');
     }),
-    'UserRepository' => DI\factory(function() {
-        return new Src\Repository\UserRepository();
+    UserRepository::class => DI\factory(function() {
+        return new UserRepository();
     }),
-    'ChangeMoney' => DI\factory(function() {
-        return new Src\Service\Exchange\ChangeMoney();
+    ChangeMoney::class => DI\factory(function() {
+        return new ChangeMoney();
     }),
-    'BusinesWithdrawTransaction' => function (Psr\Container\ContainerInterface $c) {
-        return new Src\Service\FeeCalculation\BusinesWithdrawTransaction( $c->get('ChangeMoney'), $c->get('UserRepository') );
+    'BusinesWithdrawTransaction' => function (ContainerInterface $c) {
+        return new Src\Service\FeeCalculation\BusinesWithdrawTransaction($c->get('ChangeMoney'), $c->get('UserRepository'));
     },
-    'PrivatWithdrawTransaction' => function (Psr\Container\ContainerInterface $c) {
-        return new Src\Service\FeeCalculation\PrivatWithdrawTransaction( $c->get('ChangeMoney'), $c->get('UserRepository') );
+    'PrivatWithdrawTransaction' => function (ContainerInterface $c) {
+        return new Src\Service\FeeCalculation\PrivatWithdrawTransaction($c->get('ChangeMoney'), $c->get('UserRepository'));
     },
-    'WithdrawTransaction' => function (Psr\Container\ContainerInterface $c) {
-        return new Src\Service\FeeCalculation\WithdrawTransaction( $c->get('ChangeMoney'), $c->get('UserRepository') );
+    'WithdrawTransaction' => function (ContainerInterface $c) {
+        return new Src\Service\FeeCalculation\WithdrawTransaction($c->get('ChangeMoney'), $c->get('UserRepository'));
     },    
-    'DepositTransaction' => function (Psr\Container\ContainerInterface $c) {
+    'DepositTransaction' => function (ContainerInterface $c) {
         return new Src\Service\FeeCalculation\DepositTransaction( $c->get('ChangeMoney'), $c->get('UserRepository') );
     },
 ];

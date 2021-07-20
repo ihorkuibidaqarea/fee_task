@@ -9,6 +9,7 @@ abstract class AccountTransactionAbstract
 {
     public  $transaction;
 
-    public function __construct($operation_type, ChangeMoneyInterface $change, UserRepositoryAbstract $repository) {}
 
+    public function __construct($operation_type, ChangeMoneyInterface $change, UserRepositoryAbstract $repository)
+    {}
 }

@@ -1,19 +1,16 @@
 <?php
 
-require __DIR__.'/../vendor/autoload.php';
-$app = require __DIR__. '/../bootstrap/container.php';
+require_once __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__. '/../bootstrap/container.php';
+
+use Src\Service\UserFee\UserFee;
 
 
-try{   
+try {   
 
-    $UserFee = $app->get('UserFee');                 
-    var_dump($UserFee->getFee());
-    
+    $userFee = $app->get(UserFee::class);                 
+    var_dump($UserFee->getFee());    
 
 } catch (\Exception $e) {
-
     echo $e->getMessage();
-
 } 
-
-

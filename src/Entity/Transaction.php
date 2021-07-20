@@ -6,7 +6,6 @@ namespace Src\Entity;
 
 class Transaction
 {
-
     public $date;
     public $amount;
     public $currency;
@@ -18,5 +17,4 @@ class Transaction
         $this->amount = $amount;
         $this->currency = $currency;
     }
-
 }
