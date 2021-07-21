@@ -18,12 +18,16 @@ class WithdrawTransaction extends WithdrawTransactionAbstract implements FeeCalc
 {
     private $exchange;
     private $repository;
+    private $privateTransaction;
+    private $businesTransaction;
 
 
     public function __construct(ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository)
     {
         $this->exchange = $exchange;
         $this->repository = $repository;
+        $this->privateTransaction = new PrivatWithdrawTransaction($exchange, $repository);
+        $this->businesTransaction = new BusinesWithdrawTransaction($exchange, $repository);
     }        
        
  
@@ -31,12 +35,10 @@ class WithdrawTransaction extends WithdrawTransactionAbstract implements FeeCalc
     {
         switch ($user_type) {
             case 'business':
-                $fee = (new BusinesWithdrawTransaction($this->exchange, $this->repository))
-                       ->fee($operation_date, $user_id, $user_type, $amount, $currency);
+                $fee = $this->businesTransaction->fee($operation_date, $user_id, $user_type, $amount, $currency);
                 return $fee;                
             case 'private':
-                $fee = (new PrivatWithdrawTransaction($this->exchange, $this->repository))
-                       ->fee($operation_date, $user_id, $user_type, $amount, $currency);
+                $fee = $this->privateTransaction->fee($operation_date, $user_id, $user_type, $amount, $currency);
                 return $fee;           
             default:
                 throw new \Exception('Unknown User Type'); 
