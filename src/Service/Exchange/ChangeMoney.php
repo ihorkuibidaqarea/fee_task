@@ -7,20 +7,20 @@ namespace Src\Service\Exchange;
 use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use Src\Service\Math\Math;
 use Src\Entity\ExchangeResponse;
+use \GuzzleHttp\Client;
 
 
 class ChangeMoney implements ChangeMoneyInterface
 {
     private const MAIN_CURRENCY = 'EUR';
     private const SCALE = 5;
-    private $exchangeRate;
-    private $math;
+    private array $exchangeRate;
+    private Math $math;
 
 
-    public function __construct()
+    public function __construct(Client $client)
     {
         $this->math = new Math(self::SCALE);
-        $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', 'http://api.exchangeratesapi.io/v1/latest?access_key=984d2f95a380439bdbb894a6f9521422');        
         $responseCode = $response->getStatusCode(); 
         $data = json_decode($response->getBody()->getContents(), true);
@@ -55,8 +55,7 @@ class ChangeMoney implements ChangeMoneyInterface
             $exchange =  $this->math->multiply((string) $amount, (string) $rate);                
             if ($this->math->compare($exchange, '0') > 0) {                        
                 return new ExchangeResponse($exchange);
-            }
-                          
+            }                          
         }
     }
 

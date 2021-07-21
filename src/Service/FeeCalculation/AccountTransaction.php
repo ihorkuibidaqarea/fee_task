@@ -11,9 +11,8 @@ use Src\Service\FeeCalculation\{
                                 };
 use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use Src\Repository\Interfaces\UserRepositoryAbstract;
-
-use Psr\Container\ContainerInterface;
-use function DI\get;
+use Src\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
+use Src\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
 
 
 class AccountTransaction extends AccountTransactionAbstract
@@ -22,45 +21,37 @@ class AccountTransaction extends AccountTransactionAbstract
     private string $transactionType;
     private ChangeMoneyInterface $exchange;
     private UserRepositoryAbstract $repository;
+    private WithdrawTransactionAbstract $withdraw;
+    private DepositTransactionAbstract $deposit;
+    
 
-
-    public function __construct($transactionType, ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository)
-    {
+    public function __construct(
+        $transactionType,
+        ChangeMoneyInterface $exchange,
+        UserRepositoryAbstract $repository,
+        WithdrawTransactionAbstract $withdraw,
+        DepositTransactionAbstract $deposit
+    ) {
         $this->transactionType = $transactionType;
         $this->exchange = $exchange;
         $this->repository = $repository;
+        $this->withdraw = $withdraw;
+        $this->deposit = $deposit;
     }
 
 
     public function getTransaction()
     {
-        $rt = 78;
         switch ($this->transactionType) {
             case 'withdraw':
-                $this->transaction = get(WithdrawTransaction::class);//($this->exchange, $this->repository);
+                $this->transaction = $this->withdraw;
                 break;
             case 'deposit':
-                $this->transaction =  new DepositTransaction($this->exchange, $this->repository);
+                $this->transaction = $this->deposit;
                 break;            
             default:
                 throw new \Exception('Invalid Transaction Type'); 
         }
         return $this->transaction;
-    }
-
-
-    // public function __construct($operationType, ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository)
-    // {        
-    //     switch ($operationType) {
-    //         case 'withdraw':
-    //             $this->transaction =  new WithdrawTransaction($exchange, $repository);
-    //             break;
-    //         case 'deposit':
-    //             $this->transaction =  new DepositTransaction($exchange, $repository);
-    //             break;            
-    //         default:
-    //             throw new \Exception('Invalid Transaction Type'); 
-    //     }
-    // }
-     
+    }     
 }

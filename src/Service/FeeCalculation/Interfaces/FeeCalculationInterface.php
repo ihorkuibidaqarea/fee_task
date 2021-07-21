@@ -2,6 +2,7 @@
 
 namespace Src\Service\FeeCalculation\Interfaces;
 
+
 interface FeeCalculationInterface
 {
     public function fee(

@@ -16,6 +16,7 @@ abstract class UserFeeAbstract
     {
         $this->data = $parser->data();
     }
+    
 
     public function getFee()
     {}

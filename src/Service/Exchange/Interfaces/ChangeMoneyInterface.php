@@ -2,6 +2,7 @@
 
 namespace Src\Service\Exchange\Interfaces;
 
+
 interface ChangeMoneyInterface
 {
     public function moneyExchange(string $amount, string $currency);
