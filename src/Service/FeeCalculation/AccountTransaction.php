@@ -12,10 +12,13 @@ use Src\Service\FeeCalculation\{
 use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use Src\Repository\Interfaces\UserRepositoryAbstract;
 
+use Psr\Container\ContainerInterface;
+use function DI\get;
+
 
 class AccountTransaction extends AccountTransactionAbstract
 {
-    private FeeCalculationInterface $transaction;
+    private $transaction;
     private string $transactionType;
     private ChangeMoneyInterface $exchange;
     private UserRepositoryAbstract $repository;
@@ -31,12 +34,13 @@ class AccountTransaction extends AccountTransactionAbstract
 
     public function getTransaction()
     {
+        $rt = 78;
         switch ($this->transactionType) {
             case 'withdraw':
-                $this->transaction =  new WithdrawTransaction($exchange, $repository);
+                $this->transaction = get(WithdrawTransaction::class);//($this->exchange, $this->repository);
                 break;
             case 'deposit':
-                $this->transaction =  new DepositTransaction($exchange, $repository);
+                $this->transaction =  new DepositTransaction($this->exchange, $this->repository);
                 break;            
             default:
                 throw new \Exception('Invalid Transaction Type'); 

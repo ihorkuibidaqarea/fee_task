@@ -12,15 +12,31 @@ use Src\Repository\UserRepository;
 use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use Src\Service\Exchange\ChangeMoney;
 
+use Src\Service\FeeCalculation\WithdrawTransaction;
+
+use Src\Service\FeeCalculation\Interfaces\AccountTransactionAbstract;
+use Src\Service\FeeCalculation\AccountTransaction;
+
+use function DI\create;
+use function DI\get;
+
 
 return [
-    UserFeeAbstract::class => DI\create(UserFee::class),
-    FileParserAbstract::class => DI\create(CsvParser::class),
-    UserRepositoryAbstract::class => DI\create(UserRepository::class),
-    UserFee::class => function (ContainerInterface $c) {
-        $df = new UserFee($c->get(CsvParser::class), $c->get(ChangeMoney::class), $c->get(UserRepository::class));
-       return $df;
-    },
+    UserFeeAbstract::class => create(UserFee::class)->constructor(get(CsvParser::class), get(ChangeMoney::class), get(UserRepository::class)),
+    FileParserAbstract::class => create(CsvParser::class),
+    UserRepositoryAbstract::class => create(UserRepository::class),
+    ChangeMoneyInterface::class => create(ChangeMoney::class),
+    AccountTransactionAbstract::class => create(AccountTransaction::class)->constructor(),
+    // UserFee::class => create()
+    // ->constructor(get(FileParserAbstract::class), get(ChangeMoneyInterface::class), get(UserRepositoryAbstract::class)), 
+    // DI\factory(function (ContainerInterface $c) {
+    //     $fgh = $c;
+    //     return new UserFee($c->get(CsvParser::class), $c->get(ChangeMoney::class), $c->get(UserRepository::class));
+    // }),
+    //  function (ContainerInterface $c) {
+    //     $df = new UserFee($c->get(CsvParser::class), $c->get(ChangeMoney::class), $c->get(UserRepository::class));
+    //    return $df;
+    // },
     CsvParser::class => DI\factory(function() {
        return new CsvParser('transaction.csv');
     }),
@@ -36,9 +52,7 @@ return [
     'PrivatWithdrawTransaction' => function (ContainerInterface $c) {
         return new Src\Service\FeeCalculation\PrivatWithdrawTransaction($c->get('ChangeMoney'), $c->get('UserRepository'));
     },
-    'WithdrawTransaction' => function (ContainerInterface $c) {
-        return new Src\Service\FeeCalculation\WithdrawTransaction($c->get('ChangeMoney'), $c->get('UserRepository'));
-    },    
+    WithdrawTransaction::class => create(WithdrawTransaction::class)->constructor(get(ChangeMoney::class), get(UserRepository::class)),    
     'DepositTransaction' => function (ContainerInterface $c) {
         return new Src\Service\FeeCalculation\DepositTransaction( $c->get('ChangeMoney'), $c->get('UserRepository') );
     },

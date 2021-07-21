@@ -72,5 +72,5 @@ class ChangeMoney implements ChangeMoneyInterface
                 return new ExchangeResponse($exchange);
             }                        
         }
-    }    
+    }
 }

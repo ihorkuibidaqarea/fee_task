@@ -7,7 +7,7 @@ use Src\Repository\Interfaces\UserRepositoryAbstract;
 
 abstract class AccountTransactionAbstract 
 {
-    public  $transaction;
+    private $transaction;
 
 
     public function __construct($operation_type, ChangeMoneyInterface $change, UserRepositoryAbstract $repository)
