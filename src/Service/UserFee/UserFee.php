@@ -8,7 +8,6 @@ use App\Service\FeeCalculation\AccountTransaction;
 use App\Service\FileParser\FileParserAbstract;
 use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
-
 use App\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
 use App\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
 use App\Service\Math\Math;

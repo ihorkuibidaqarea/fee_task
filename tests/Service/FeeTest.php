@@ -8,9 +8,13 @@ use App\Service\FileParser\CsvParser;
 use App\Service\Exchange\ChangeMoney;
 use App\Repository\UserRepository;
 use App\Service\UserFee\UserFee;
-use App\Service\UserFee\UserFeeAbstract;
+use App\Service\FeeCalculation\{
+    WithdrawTransaction,
+    DepositTransaction
+};
 use PHPUnit\Framework\TestCase;
 use App\Entity\Operaiton;
+use \GuzzleHttp\Client;
 
 class FeeTest extends TestCase
 {
@@ -28,12 +32,23 @@ class FeeTest extends TestCase
      * @dataProvider dataProviderForFeeTesting
      */
 
-    public function testFee( array $data, array $expectation)
+    public function testFee(array $data, array $expectation)
     {
         $CsvParserMock = \Mockery::mock('App\Service\FileParser\CsvParser', 'App\Service\FileParser\FileParserAbstract');
-        $CsvParserMock->shouldReceive('data')->andReturn($data);        
-        $responce = (new UserFee($CsvParserMock,  new ChangeMoney(), new UserRepository()))->getFee();
-        $this->assertEquals($responce, $expectation);
+        $CsvParserMock->shouldReceive('data')->andReturn($data);
+        $changeMoney = new ChangeMoney(new Client());
+        $userRepository = new UserRepository();
+        $withdraw = new WithdrawTransaction($changeMoney, $userRepository);
+        $deposit = new DepositTransaction($changeMoney, $userRepository);
+        $userFeeResponce = new UserFee(
+            $CsvParserMock,
+            $changeMoney,
+            $userRepository,
+            $withdraw,
+            $deposit          
+        );      
+        $userFee = $userFeeResponce->getFee();
+        $this->assertEquals($userFee, $expectation);
     }
 
 

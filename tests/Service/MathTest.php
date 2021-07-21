@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Test\Service;
 
 use PHPUnit\Framework\TestCase;
-use Src\Service\Math\Math;
+use App\Service\Math\Math;
 
 class MathTest extends TestCase
 {
