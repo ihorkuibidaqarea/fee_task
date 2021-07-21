@@ -1,10 +1,10 @@
 <?php
 
-namespace Src\Service\UserFee;
+namespace App\Service\UserFee;
 
-use Src\Service\FileParser\FileParserAbstract;
-use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
-use Src\Repository\Interfaces\UserRepositoryAbstract;
+use App\Service\FileParser\FileParserAbstract;
+use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
+use App\Repository\Interfaces\UserRepositoryAbstract;
 
 
 abstract class UserFeeAbstract

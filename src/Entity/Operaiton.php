@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Src\Entity;
+namespace App\Entity;
 
 class Operaiton
 {

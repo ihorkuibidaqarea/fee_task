@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Test\Service;
 
-use Src\Service\FileParser\CsvParser;
-use Src\Service\Exchange\ChangeMoney;
-use Src\Repository\UserRepository;
-use Src\Service\UserFee\UserFee;
-use Src\Service\UserFee\UserFeeAbstract;
+use App\Service\FileParser\CsvParser;
+use App\Service\Exchange\ChangeMoney;
+use App\Repository\UserRepository;
+use App\Service\UserFee\UserFee;
+use App\Service\UserFee\UserFeeAbstract;
 use PHPUnit\Framework\TestCase;
-use Src\Entity\Operaiton;
+use App\Entity\Operaiton;
 
 class FeeTest extends TestCase
-{   
-
+{
     public function setUp(): void
     {
         parent::setUp();       
@@ -31,15 +30,11 @@ class FeeTest extends TestCase
 
     public function testFee( array $data, array $expectation)
     {
-
-        $CsvParserMock = \Mockery::mock(  'Src\Service\FileParser\CsvParser', 'Src\Service\FileParser\FileParserAbstract' );
-        $CsvParserMock->shouldReceive('data')->andReturn( $data );
-        
-        $responce = (new UserFee( $CsvParserMock,  new ChangeMoney(), new UserRepository() ))->getFee();
+        $CsvParserMock = \Mockery::mock('App\Service\FileParser\CsvParser', 'App\Service\FileParser\FileParserAbstract');
+        $CsvParserMock->shouldReceive('data')->andReturn($data);        
+        $responce = (new UserFee($CsvParserMock,  new ChangeMoney(), new UserRepository()))->getFee();
         $this->assertEquals($responce, $expectation);
-
     }
-
 
 
     public function dataProviderForFeeTesting(): array
@@ -49,18 +44,16 @@ class FeeTest extends TestCase
         $oneDayAgo = date('Y-m-d', strtotime('-1 days'));
 
         return [
-            [
                 [
-                    new Operaiton ($fiveDaysAgo, 1, 'private', 'withdraw', '1200.00', 'EUR'),
-                    new Operaiton ($fiveDaysAgo, 1, 'private', 'withdraw', '1000.00', 'EUR'),
-                    new Operaiton ($threeDaysAgo, 1, 'private', 'withdraw', '1000.00', 'EUR'),
-                    new Operaiton ($oneDayAgo, 1, 'private', 'deposit', '200.00', 'EUR'),
-                    new Operaiton ($oneDayAgo, 2, 'business', 'withdraw', '900.00', 'EUR')
-                ],
-                ["EUR - 0,60", "EUR - 3,00", "EUR - 3,00", "EUR - 0,06", "EUR - 0,00"]
-            ]
+                    [
+                        new Operaiton ($fiveDaysAgo, 1, 'private', 'withdraw', '1200.00', 'EUR'),
+                        new Operaiton ($fiveDaysAgo, 1, 'private', 'withdraw', '1000.00', 'EUR'),
+                        new Operaiton ($threeDaysAgo, 1, 'private', 'withdraw', '1000.00', 'EUR'),
+                        new Operaiton ($oneDayAgo, 1, 'private', 'deposit', '200.00', 'EUR'),
+                        new Operaiton ($oneDayAgo, 2, 'business', 'withdraw', '900.00', 'EUR')
+                    ],
+                    ["0,60", "3,00", "3,00", "0,06", "0,00"]
+                ]
         ];
     }
-    
-    
 }

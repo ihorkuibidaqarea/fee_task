@@ -1,10 +1,10 @@
 <?php
 
-namespace Src\Service\FeeCalculation\Interfaces;
+namespace App\Service\FeeCalculation\Interfaces;
 
-use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
-use Src\Repository\Interfaces\UserRepositoryAbstract;
-use Src\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
+use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
+use App\Repository\Interfaces\UserRepositoryAbstract;
+use App\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
 
 
 abstract class AccountTransactionAbstract 

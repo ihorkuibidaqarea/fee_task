@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Service\Exchange\Interfaces;
+namespace App\Service\Exchange\Interfaces;
 
 
 interface ChangeMoneyInterface

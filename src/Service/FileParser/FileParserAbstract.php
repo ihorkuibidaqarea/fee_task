@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Service\FileParser;
+namespace App\Service\FileParser;
 
 
 abstract class FileParserAbstract

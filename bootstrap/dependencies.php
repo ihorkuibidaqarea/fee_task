@@ -3,23 +3,23 @@
 
 use Psr\Container\ContainerInterface;
 
-use Src\Service\UserFee\UserFeeAbstract;
-use Src\Service\UserFee\UserFee;
-use Src\Service\FileParser\FileParserAbstract;
-use Src\Service\FileParser\CsvParser;
-use Src\Repository\Interfaces\UserRepositoryAbstract;
-use Src\Repository\UserRepository;
-use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
-use Src\Service\Exchange\ChangeMoney;
+use App\Service\UserFee\UserFeeAbstract;
+use App\Service\UserFee\UserFee;
+use App\Service\FileParser\FileParserAbstract;
+use App\Service\FileParser\CsvParser;
+use App\Repository\Interfaces\UserRepositoryAbstract;
+use App\Repository\UserRepository;
+use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
+use App\Service\Exchange\ChangeMoney;
 
-use Src\Service\FeeCalculation\WithdrawTransaction;
-use Src\Service\FeeCalculation\DepositTransaction;
+use App\Service\FeeCalculation\WithdrawTransaction;
+use App\Service\FeeCalculation\DepositTransaction;
 
-use Src\Service\FeeCalculation\Interfaces\AccountTransactionAbstract;
-use Src\Service\FeeCalculation\AccountTransaction;
+use App\Service\FeeCalculation\Interfaces\AccountTransactionAbstract;
+use App\Service\FeeCalculation\AccountTransaction;
 
-use Src\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
-use Src\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
+use App\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
+use App\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
 
 use \GuzzleHttp\Client;
 

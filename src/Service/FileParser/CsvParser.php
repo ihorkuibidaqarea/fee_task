@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Src\Service\FileParser;
+namespace App\Service\FileParser;
 
-use Src\Entity\Operaiton;
+use App\Entity\Operaiton;
 
 
 class CsvParser extends FileParserAbstract

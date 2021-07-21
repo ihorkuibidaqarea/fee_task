@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Src\Service\FeeCalculation;
+namespace App\Service\FeeCalculation;
 
-use Src\Service\FeeCalculation\Interfaces\FeeCalculationInterface;
-use Src\Service\Math\Math;
-use Src\Repository\UserRepository;
-use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
-use Src\Repository\Interfaces\UserRepositoryAbstract;
+use App\Service\FeeCalculation\Interfaces\FeeCalculationInterface;
+use App\Service\Math\Math;
+use App\Repository\UserRepository;
+use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
+use App\Repository\Interfaces\UserRepositoryAbstract;
 
 
 class PrivatWithdrawTransaction implements FeeCalculationInterface

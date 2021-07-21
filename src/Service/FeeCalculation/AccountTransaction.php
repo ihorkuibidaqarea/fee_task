@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Src\Service\FeeCalculation;
+namespace App\Service\FeeCalculation;
 
-use Src\Service\FeeCalculation\Interfaces\AccountTransactionAbstract;
-use Src\Service\FeeCalculation\{
+use App\Service\FeeCalculation\Interfaces\AccountTransactionAbstract;
+use App\Service\FeeCalculation\{
                                 DepositTransaction,
                                 WithdrawTransaction
                                 };
-use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
-use Src\Repository\Interfaces\UserRepositoryAbstract;
-use Src\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
-use Src\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
+use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
+use App\Repository\Interfaces\UserRepositoryAbstract;
+use App\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
+use App\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
 
 
 class AccountTransaction extends AccountTransactionAbstract

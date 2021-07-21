@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Service\FeeCalculation\Interfaces;
+namespace App\Service\FeeCalculation\Interfaces;
 
 
 interface FeeCalculationInterface

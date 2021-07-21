@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Src\Service\UserFee;
+namespace App\Service\UserFee;
 
-use Src\Service\FeeCalculation\AccountTransaction;
-use Src\Service\FileParser\FileParserAbstract;
-use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
-use Src\Repository\Interfaces\UserRepositoryAbstract;
+use App\Service\FeeCalculation\AccountTransaction;
+use App\Service\FileParser\FileParserAbstract;
+use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
+use App\Repository\Interfaces\UserRepositoryAbstract;
 
-use Src\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
-use Src\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
-use Src\Service\Math\Math;
+use App\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
+use App\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
+use App\Service\Math\Math;
 
 
 class UserFee extends UserFeeAbstract

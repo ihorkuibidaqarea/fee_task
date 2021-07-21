@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Src\Repository;
+namespace App\Repository;
 
-use Src\Repository\Interfaces\UserRepositoryAbstract;
-use Src\Entity\Transaction;
+use App\Repository\Interfaces\UserRepositoryAbstract;
+use App\Entity\Transaction;
 
 class UserRepository extends UserRepositoryAbstract
 {

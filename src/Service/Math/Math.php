@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Src\Service\Math;
+namespace App\Service\Math;
 
 
 class Math

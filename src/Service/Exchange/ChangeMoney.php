@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Src\Service\Exchange;
+namespace App\Service\Exchange;
 
-use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
-use Src\Service\Math\Math;
-use Src\Entity\ExchangeResponse;
+use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
+use App\Service\Math\Math;
+use App\Entity\ExchangeResponse;
 use \GuzzleHttp\Client;
 
 

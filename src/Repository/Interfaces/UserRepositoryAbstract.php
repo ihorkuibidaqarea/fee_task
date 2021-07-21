@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Repository\Interfaces;
+namespace App\Repository\Interfaces;
 
 abstract class UserRepositoryAbstract
 {

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Src\Service\FeeCalculation;
+namespace App\Service\FeeCalculation;
 
-use Src\Service\FeeCalculation\{
+use App\Service\FeeCalculation\{
                                 Interfaces\FeeCalculationInterface,
                                 Interfaces\WithdrawTransactionAbstract,
                                 BusinesWithdrawTransaction,
                                 PrivatWithdrawTransaction
                                 };
-use Src\Service\Exchange\Interfaces\ChangeMoneyInterface;
-use Src\Repository\Interfaces\UserRepositoryAbstract;
+use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
+use App\Repository\Interfaces\UserRepositoryAbstract;
 
 
 class WithdrawTransaction extends WithdrawTransactionAbstract implements FeeCalculationInterface
