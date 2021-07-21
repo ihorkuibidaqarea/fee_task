@@ -6,7 +6,7 @@ use App\Service\UserFee\UserFeeAbstract;
 
 
 try {
-    var_dump($app->get(UserFeeAbstract::class)->getFee());  
+    print_r($app->get(UserFeeAbstract::class)->getFee());  
 } catch (\Exception $e) {
     echo $e->getMessage();
 } 
