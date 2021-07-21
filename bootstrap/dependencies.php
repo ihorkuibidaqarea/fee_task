@@ -28,29 +28,27 @@ use function DI\get;
 
 
 return [
-    UserFeeAbstract::class => create(UserFee::class)->constructor(
-                                                        get(CsvParser::class),
-                                                        get(ChangeMoney::class),
-                                                        get(UserRepository::class),
-                                                        get(WithdrawTransactionAbstract::class),
-                                                        get(DepositTransactionAbstract::class)
-                                                    ),
+    UserFeeAbstract::class => create(UserFee::class)
+                              ->constructor(
+                                    get(CsvParser::class),
+                                    get(ChangeMoney::class),
+                                    get(UserRepository::class),
+                                    get(WithdrawTransactionAbstract::class),
+                                    get(DepositTransactionAbstract::class)
+                              ),
     FileParserAbstract::class => create(CsvParser::class),
     UserRepositoryAbstract::class => create(UserRepository::class),
     ChangeMoneyInterface::class => create(ChangeMoney::class),
-    WithdrawTransaction::class => create(WithdrawTransaction::class)->constructor(get(ChangeMoney::class), get(UserRepository::class)),
-    DepositTransaction::class => create(DepositTransaction::class)->constructor(get(ChangeMoney::class), get(UserRepository::class)),
-    // AccountTransactionAbstract::class => create(AccountTransaction::class)->constructor(),
-    // UserFee::class => create()
-    // ->constructor(get(FileParserAbstract::class), get(ChangeMoneyInterface::class), get(UserRepositoryAbstract::class)), 
-    // DI\factory(function (ContainerInterface $c) {
-    //     $fgh = $c;
-    //     return new UserFee($c->get(CsvParser::class), $c->get(ChangeMoney::class), $c->get(UserRepository::class));
-    // }),
-    //  function (ContainerInterface $c) {
-    //     $df = new UserFee($c->get(CsvParser::class), $c->get(ChangeMoney::class), $c->get(UserRepository::class));
-    //    return $df;
-    // },
+    WithdrawTransaction::class => create(WithdrawTransaction::class)
+                                  ->constructor(
+                                      get(ChangeMoney::class),
+                                      get(UserRepository::class)
+                                  ),
+    DepositTransaction::class => create(DepositTransaction::class)
+                                 ->constructor(
+                                     get(ChangeMoney::class),
+                                     get(UserRepository::class)
+                                 ),
     CsvParser::class => DI\factory(function() {
        return new CsvParser('transaction.csv');
     }),
@@ -60,12 +58,14 @@ return [
     ChangeMoney::class => DI\factory(function() {
         return new ChangeMoney(new Client());
     }),
-    // 'BusinesWithdrawTransaction' => function (ContainerInterface $c) {
-    //     return new Src\Service\FeeCalculation\BusinesWithdrawTransaction($c->get('ChangeMoney'), $c->get('UserRepository'));
-    // },
-    // 'PrivatWithdrawTransaction' => function (ContainerInterface $c) {
-    //     return new Src\Service\FeeCalculation\PrivatWithdrawTransaction($c->get('ChangeMoney'), $c->get('UserRepository'));
-    // },
-    WithdrawTransactionAbstract::class => create(WithdrawTransaction::class)->constructor(get(ChangeMoney::class), get(UserRepository::class)),    
-    DepositTransactionAbstract::class =>  create(DepositTransaction::class)->constructor(get(ChangeMoney::class), get(UserRepository::class)),
+    WithdrawTransactionAbstract::class => create(WithdrawTransaction::class)
+                                        ->constructor(
+                                            get(ChangeMoney::class),
+                                            get(UserRepository::class)
+                                        ),    
+    DepositTransactionAbstract::class => create(DepositTransaction::class)
+                                         ->constructor(
+                                            get(ChangeMoney::class),
+                                            get(UserRepository::class)
+                                         ),
 ];
