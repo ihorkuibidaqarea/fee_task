@@ -38,10 +38,12 @@ return [
     WithdrawTransaction::class => create(WithdrawTransaction::class)->constructor(
         get(ChangeMoney::class),
         get(UserRepository::class),
+        get(Math::class)
     ),
     DepositTransaction::class => create(DepositTransaction::class)->constructor(
         get(ChangeMoney::class),
-        get(UserRepository::class)
+        get(UserRepository::class),
+        get(Math::class)
     ),
     CsvParser::class => DI\factory(function() {return new CsvParser('transaction.csv');}),
     UserRepository::class => DI\factory(function() {return new UserRepository();}),
@@ -54,6 +56,7 @@ return [
     ),    
     DepositTransactionAbstract::class => create(DepositTransaction::class)->constructor(
         get(ChangeMoney::class),
-        get(UserRepository::class)
+        get(UserRepository::class),
+        get(Math::class)
     ),
 ];

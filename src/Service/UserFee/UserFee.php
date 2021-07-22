@@ -28,13 +28,12 @@ class UserFee extends UserFeeAbstract
    
 
     public function __construct(
-                        FileParserAbstract $parser,
-                        ChangeMoneyInterface $exchange,
-                        UserRepositoryAbstract $repository,
-                        WithdrawTransactionAbstract $withdraw,
-                        DepositTransactionAbstract $deposit
-                    )
-    {
+        FileParserAbstract $parser,
+        ChangeMoneyInterface $exchange,
+        UserRepositoryAbstract $repository,
+        WithdrawTransactionAbstract $withdraw,
+        DepositTransactionAbstract $deposit
+    ) {
         $this->data = $parser->data();
         $this->exchange = $exchange;
         $this->repository = $repository;
@@ -57,8 +56,6 @@ class UserFee extends UserFeeAbstract
         try {
             $fee = (new AccountTransaction(
                 $operation->getOperationName(),
-                $this->exchange,
-                $this->repository,
                 $this->withdraw,
                 $this->deposit
             ))

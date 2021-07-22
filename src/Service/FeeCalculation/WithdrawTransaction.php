@@ -20,6 +20,7 @@ class WithdrawTransaction extends WithdrawTransactionAbstract implements FeeCalc
     private $exchange;
     private $repository;
     private $math;
+    private $withdrawalClient;
 
 
     public function __construct(

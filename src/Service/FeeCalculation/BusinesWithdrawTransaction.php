@@ -15,7 +15,8 @@ use App\Config\ConfigManager;
 class BusinesWithdrawTransaction implements FeeCalculationInterface
 {
     private $feePercent;
-    private $allowedAmount; // const ALLOWED_AMOUNT = '1000';
+    private $allowedAmount;
+    private $freeWeekWithdrawals;
     private Math $math;
     private ChangeMoneyInterface $exchange;
     private UserRepositoryAbstract $repository;
@@ -28,6 +29,7 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
         $this->math = $math;
         $this->feePercent = ConfigManager::getConfig('busines_withdraw_fee');
         $this->allowedAmount = ConfigManager::getConfig('week_allowed_withdraw_amount');
+        $this->freeWeekWithdrawals = ConfigManager::getConfig('week_allowed_withdraw_atemps');
     }
     
 
@@ -42,13 +44,12 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
     private function getAmmountForFee($operation_date, $user_id, $amount, $currency)
     {
         $userWithdrawals = $this->repository->getLastWeekWithdravals($user_id);
-        if (is_array($userWithdrawals)) {                                    
-            if (count( $userWithdrawals ) > 2) {
+        if (is_array($userWithdrawals)) {
+            if (count( $userWithdrawals ) > $this->freeWeekWithdrawals) {
                 return $amount;
-            } else {
-               $amountForFee = $this->feeDiffernce($userWithdrawals, $amount, $currency);
-               return $amountForFee;                               
             }
+            $amountForFee = $this->feeDiffernce($userWithdrawals, $amount, $currency);
+            return $amountForFee; 
         }  
 
         $allowedAmountInCurrency = $this->exchange->moneyExchange($this->allowedAmount, $currency);
@@ -63,14 +64,13 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
     }
 
 
-    private function wthdrawedAmountInEuro($userWithdrawals)
+    private function wthdrawedAmountInEuro(array $userWithdrawals)
     {
         $withdrawed = '0';
         foreach ($userWithdrawals as $withdrawal) {
             $withdravedInEuro = $this->exchange->moneyExchange($withdrawal->amount, $withdrawal->currency);
-
             if ($withdravedInEuro->success) {
-                $withdrawed = $this->math->add((string) $withdrawed, (string) $withdravedInEuro->amount);
+                $withdrawed = $this->math->add($withdrawed, $withdravedInEuro->amount);
             } else {
                 throw new \Exception('Exchange error');
             }            
@@ -79,26 +79,22 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
     }
 
 
-    private function feeDiffernce($userWithdrawals, $amount, $currency)
+    private function feeDiffernce(array $userWithdrawals, string $amount, string $currency)
     {        
         $withdrawed = $this->wthdrawedAmountInEuro($userWithdrawals);
-        $difference =  $this->math->subtract($this->allowedAmount, (string) $withdrawed);
+        $difference =  $this->math->subtract($this->allowedAmount, $withdrawed);
         if ($this->math->compare($difference, '0') <= 0) {
             return $amount;
-        } else {
-           $allowedInCurrency = $this->exchange->moneyExchange($difference, $currency);           
-           
-           if ($allowedInCurrency->success) {
-                $forFee =  $this->math->subtract((string) $amount, (string) $allowedInCurrency->amount);
-
-                if ($this->math->compare($forFee, '0') <= 0) {
-                    return '0';        
-                } 
-
-                return $forFee;                
-            } else {
-                throw new \Exception('Exchange error'); 
-            }
         }
+
+        $allowedInCurrency = $this->exchange->moneyExchange($difference, $currency); 
+        if ($allowedInCurrency->success) {
+            $forFee =  $this->math->subtract((string) $amount, (string) $allowedInCurrency->amount);
+            if ($this->math->compare($forFee, '0') <= 0) {
+                return '0';        
+            } 
+            return $forFee;                
+        }
+        throw new \Exception('Exchange error');        
     }
 }

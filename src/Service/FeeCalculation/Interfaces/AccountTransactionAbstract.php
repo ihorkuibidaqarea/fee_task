@@ -2,9 +2,7 @@
 
 namespace App\Service\FeeCalculation\Interfaces;
 
-use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
-use App\Repository\Interfaces\UserRepositoryAbstract;
-use App\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
+use App\Service\FeeCalculation\{Interfaces\WithdrawTransactionAbstract, Interfaces\DepositTransactionAbstract};
 
 
 abstract class AccountTransactionAbstract 
@@ -14,8 +12,10 @@ abstract class AccountTransactionAbstract
 
     public function __construct(
         $operation_type,
-        ChangeMoneyInterface $change,
-        UserRepositoryAbstract $repository,
-        WithdrawTransactionAbstract $withdraw
+        WithdrawTransactionAbstract $withdraw,
+        DepositTransactionAbstract $deposit
     ) {}
+
+
+    abstract public function getTransaction();
 }

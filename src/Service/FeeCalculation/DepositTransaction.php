@@ -9,28 +9,29 @@ use App\Service\Math\Math;
 use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
 use App\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
+use App\Config\ConfigManager;
 
 
 class DepositTransaction extends DepositTransactionAbstract implements FeeCalculationInterface
 {
-    private const FEE  = '0.0003';
-    private const SCALE  = 5;
+    private $feePercent;
     public $math;
     private $exchange;
     private $repository;
 
 
-    public function __construct(ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository)
+    public function __construct(ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository, Math $math)
     {        
         $this->exchange = $exchange;
         $this->repository = $repository;
-        $this->math = new Math(self::SCALE);
+        $this->feePercent = ConfigManager::getConfig('deposit_fee');
+        $this->math = $math; //new Math(self::SCALE);
     }
 
 
     public function fee($operation_date, $user_id, $user_type, $amount, $currency): string
     {                
-        $fee = $this->math->multiply((string) $amount, self::FEE);
+        $fee = $this->math->multiply((string) $amount, $this->feePercent);
         return $fee;
     }
 }

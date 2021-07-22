@@ -16,6 +16,7 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
 {
     private $feePercent;
     private $allowedAmount;
+    private $freeWeekWithdrawals;
     public $math;
     private $exchange;
     private $repository;
@@ -28,6 +29,7 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
         $this->math = $math;
         $this->feePercent = ConfigManager::getConfig('privat_withdraw_fee');
         $this->allowedAmount = ConfigManager::getConfig('week_allowed_withdraw_amount');
+        $this->freeWeekWithdrawals = ConfigManager::getConfig('week_allowed_withdraw_atemps');
     }    
 
 
@@ -43,14 +45,11 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
     {
         $userWithdrawals = $this->repository->getLastWeekWithdravals($userId);
         if (is_array($userWithdrawals)) {
-
-            if (count($userWithdrawals) > 2) {
+            if (count($userWithdrawals) > $this->freeWeekWithdrawals) {
                 return $amount;
-            } else {
-               $amountForFee = $this->feeDiffernce($userWithdrawals, $amount, $currency);
-               return $amountForFee;                               
-            }
-            
+            } 
+            $amountForFee = $this->feeDiffernce($userWithdrawals, $amount, $currency);
+            return $amountForFee;             
         }  
 
         $allowedAmountInCurrency = $this->exchange->moneyExchange($this->allowedAmount, $currency);
@@ -59,7 +58,7 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
             if ($this->math->compare((string) $FirstRequestAllowedAmount, '0') > 0) {
                 return $FirstRequestAllowedAmount; 
             }            
-            return '0';  
+            return '0';
         }
         throw new \Exception('Fee Amount error');
     }
@@ -70,7 +69,6 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
         $withdrawed = '0';
         foreach ($userWithdrawals as $withdrawal) {
             $withdravedInEuro = $this->exchange->moneyExchange($withdrawal->amount, $withdrawal->currency);
-
             if ($withdravedInEuro->success) {
                 $withdrawed = $this->math->add((string) $withdrawed, (string) $withdravedInEuro->amount);
             } else {
@@ -87,19 +85,16 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
         $difference =  $this->math->subtract($this->allowedAmount, (string) $withdrawed);
         if ($this->math->compare( $difference, '0') <= 0) {
             return $amount;
-        } else {
-           $allowedInCurrency = $this->exchange->moneyExchange($difference, $currency);           
-           
-            if ($allowedInCurrency->success) {
-                $forFee =  $this->math->subtract((string) $amount, (string) $allowedInCurrency->amount);
-                if ($this->math->compare( $forFee, '0') <= 0) {
-                    return '0';        
-                } else {
-                    return $forFee;
-                }
-            } else {
-                throw new \Exception('Exchange error'); 
-            }
         }
+
+        $allowedInCurrency = $this->exchange->moneyExchange($difference, $currency);
+        if ($allowedInCurrency->success) {
+            $forFee =  $this->math->subtract((string) $amount, (string) $allowedInCurrency->amount);
+            if ($this->math->compare( $forFee, '0') <= 0) {
+                return '0';        
+            } 
+            return $forFee;            
+        } 
+        throw new \Exception('Exchange error');
     }
 }
