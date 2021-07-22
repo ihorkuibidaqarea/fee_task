@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Service\UserFee;
 
-use App\Service\FeeCalculation\AccountTransaction;
 use App\Service\FileParser\FileParserAbstract;
 use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
-use App\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
-use App\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
+use App\Service\FeeCalculation\{
+    Interfaces\WithdrawTransactionAbstract,
+    Interfaces\DepositTransactionAbstract,
+    AccountTransaction
+};
+use App\Entity\Operaiton;
 use App\Service\Math\Math;
 
 
@@ -43,15 +46,13 @@ class UserFee extends UserFeeAbstract
 
     public function getFee()
     {        
-        $fee = [];
         foreach ($this->data as $operation) {            
-            $fee[] = $this->calculateFee($operation);
-        }
-        return $fee;       
+            echo $this->calculateFee($operation).' ';
+        }      
     }
 
     
-    private function calculateFee($operation)
+    private function calculateFee(Operaiton $operation)
     {
         try {
             $fee = (new AccountTransaction(
@@ -77,8 +78,7 @@ class UserFee extends UserFeeAbstract
                 $operation->getCurrency()
             );
 
-            $amountFee = $this->roundFee($fee);
-            return $amountFee;
+            return $this->roundFee($fee);
         } catch (\Exception $e) {
             return $e->getMessage(); 
         }
@@ -90,7 +90,6 @@ class UserFee extends UserFeeAbstract
             (string) ceil($this->math->multiply($fee, '100')),
             '100'
         );
-        $amount = (string) number_format($amount, 2, ',', ' ');
-        return $amount;
+        return (string) number_format($amount, 2, ',', ' ');
     }
 }

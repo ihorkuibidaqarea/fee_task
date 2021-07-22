@@ -13,6 +13,7 @@ use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
 use App\Service\FeeCalculation\Interfaces\WithdrawTransactionAbstract;
 use App\Service\FeeCalculation\Interfaces\DepositTransactionAbstract;
+use App\Config\ConfigManager;
 
 
 class AccountTransaction extends AccountTransactionAbstract

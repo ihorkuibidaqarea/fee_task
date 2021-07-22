@@ -5,29 +5,31 @@ declare(strict_types=1);
 namespace App\Service\FeeCalculation;
 
 use App\Service\FeeCalculation\{
-                                Interfaces\FeeCalculationInterface,
-                                Interfaces\WithdrawTransactionAbstract,
-                                BusinesWithdrawTransaction,
-                                PrivatWithdrawTransaction
-                                };
+    Interfaces\FeeCalculationInterface,
+    Interfaces\WithdrawTransactionAbstract,
+    BusinesWithdrawTransaction,
+    PrivatWithdrawTransaction
+};
 use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
+use App\Service\Math\Math;
 
 
 class WithdrawTransaction extends WithdrawTransactionAbstract implements FeeCalculationInterface
 {
     private $exchange;
     private $repository;
-    private $privateTransaction;
-    private $businesTransaction;
+    private $math;
 
 
-    public function __construct(ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository)
-    {
+    public function __construct(
+        ChangeMoneyInterface $exchange,
+        UserRepositoryAbstract $repository,
+        Math $math
+    ) {
         $this->exchange = $exchange;
         $this->repository = $repository;
-        $this->privateTransaction = new PrivatWithdrawTransaction($exchange, $repository);
-        $this->businesTransaction = new BusinesWithdrawTransaction($exchange, $repository);
+        $this->math = $math;
     }        
        
  
@@ -35,10 +37,10 @@ class WithdrawTransaction extends WithdrawTransactionAbstract implements FeeCalc
     {
         switch ($user_type) {
             case 'business':
-                $fee = $this->businesTransaction->fee($operation_date, $user_id, $user_type, $amount, $currency);
+                $fee = (new BusinesWithdrawTransaction($this->exchange, $this->repository, $this->math))->fee($operation_date, $user_id, $user_type, $amount, $currency);
                 return $fee;                
             case 'private':
-                $fee = $this->privateTransaction->fee($operation_date, $user_id, $user_type, $amount, $currency);
+                $fee = (new PrivatWithdrawTransaction($this->exchange, $this->repository, $this->math))->fee($operation_date, $user_id, $user_type, $amount, $currency);
                 return $fee;           
             default:
                 throw new \Exception('Unknown User Type'); 

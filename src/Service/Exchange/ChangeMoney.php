@@ -12,15 +12,15 @@ use \GuzzleHttp\Client;
 
 class ChangeMoney implements ChangeMoneyInterface
 {
-    private const MAIN_CURRENCY = 'EUR';
-    private const SCALE = 5;
+    private string $mainCurrency;
     private array $exchangeRate;
     private Math $math;
 
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, Math $math)
     {
-        $this->math = new Math(self::SCALE);
+        $this->math = $math;
+        $this->mainCurrency = 'EUR';
         $response = $client->request('GET', 'http://api.exchangeratesapi.io/v1/latest?access_key=984d2f95a380439bdbb894a6f9521422');        
         $responseCode = $response->getStatusCode(); 
         $data = json_decode($response->getBody()->getContents(), true);
@@ -48,11 +48,11 @@ class ChangeMoney implements ChangeMoneyInterface
 
     public function moneyExchange(string $amount, string $currency)
     {            
-        if (SELF::MAIN_CURRENCY === $currency) {
+        if ($this->mainCurrency === $currency) {
             return new ExchangeResponse($amount);
         } else {
-            $rate = $this->getExchangeRate((string) $currency);
-            $exchange =  $this->math->multiply((string) $amount, (string) $rate);                
+            $rate = $this->getExchangeRate($currency);
+            $exchange =  $this->math->multiply($amount, (string) $rate);                
             if ($this->math->compare($exchange, '0') > 0) {                        
                 return new ExchangeResponse($exchange);
             }                          
@@ -62,11 +62,11 @@ class ChangeMoney implements ChangeMoneyInterface
 
     public function reverseMoneyExchange(string $amount, string $currency)
     {            
-        if (SELF::MAIN_CURRENCY === $currency) {
+        if ($this->mainCurrency === $currency) {
             return new ExchangeResponse($amount);
         } else {
-            $rate = $this->getExchangeRate((string) $currency);
-            $exchange = $this->math->divide((string) $amount, (string) $rate);                    
+            $rate = $this->getExchangeRate($currency);
+            $exchange = $this->math->divide($amount, (string) $rate);                    
             if ($this->math->compare($exchange, '0') > 0) {                        
                 return new ExchangeResponse($exchange);
             }                        

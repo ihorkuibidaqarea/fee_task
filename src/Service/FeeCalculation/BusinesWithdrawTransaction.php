@@ -9,30 +9,32 @@ use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
 use App\Repository\UserRepository;
 use App\Service\Math\Math;
+use App\Config\ConfigManager;
 
 
 class BusinesWithdrawTransaction implements FeeCalculationInterface
 {
-    private const FEE  = '0.005';
-    private const SCALE = 3;
-    private const ALLOWED_AMOUNT = '1000';
-    public Math $math;
+    private $feePercent;
+    private $allowedAmount; // const ALLOWED_AMOUNT = '1000';
+    private Math $math;
     private ChangeMoneyInterface $exchange;
     private UserRepositoryAbstract $repository;
 
 
-    public function __construct(ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository)
+    public function __construct(ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository, Math $math)
     {
         $this->exchange = $exchange;
         $this->repository = $repository;
-        $this->math = new Math(self::SCALE);
+        $this->math = $math;
+        $this->feePercent = ConfigManager::getConfig('busines_withdraw_fee');
+        $this->allowedAmount = ConfigManager::getConfig('week_allowed_withdraw_amount');
     }
     
 
     public function fee(string $operation_date, $user_id, string $user_type, string $amount, string $currency)
     {          
         $value = $this->getAmmountForFee($operation_date, $user_id, $amount, $currency);
-        $fee = $this->math->multiply((string) $value, self::FEE);
+        $fee = $this->math->multiply((string) $value, $this->feePercent);
         return $fee; 
     }
 
@@ -49,7 +51,7 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
             }
         }  
 
-        $allowedAmountInCurrency = $this->exchange->moneyExchange(self::ALLOWED_AMOUNT, $currency);
+        $allowedAmountInCurrency = $this->exchange->moneyExchange($this->allowedAmount, $currency);
         if ($allowedAmountInCurrency->success) {
             $FirstRequestAllowedAmount = $this->math->subtract($amount, $allowedAmountInCurrency->amount);
             if ($this->math->compare((string) $FirstRequestAllowedAmount, '0') > 0) {
@@ -80,7 +82,7 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
     private function feeDiffernce($userWithdrawals, $amount, $currency)
     {        
         $withdrawed = $this->wthdrawedAmountInEuro($userWithdrawals);
-        $difference =  $this->math->subtract((string) self::ALLOWED_AMOUNT, (string) $withdrawed);
+        $difference =  $this->math->subtract($this->allowedAmount, (string) $withdrawed);
         if ($this->math->compare($difference, '0') <= 0) {
             return $amount;
         } else {
@@ -88,11 +90,12 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
            
            if ($allowedInCurrency->success) {
                 $forFee =  $this->math->subtract((string) $amount, (string) $allowedInCurrency->amount);
-                if ($this->math->compare( $forFee, '0') <= 0) {
+
+                if ($this->math->compare($forFee, '0') <= 0) {
                     return '0';        
-                } else {
-                    return $forFee;
-                }
+                } 
+
+                return $forFee;                
             } else {
                 throw new \Exception('Exchange error'); 
             }
