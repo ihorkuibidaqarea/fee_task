@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\FeeCalculation;
 
 use App\Service\FeeCalculation\Interfaces\FeeCalculationInterface;
-use App\Service\Math\Math;
+use App\Service\Math\MathAbstract;
 use App\Repository\UserRepository;
 use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
@@ -17,12 +17,12 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
     private $feePercent;
     private $allowedAmount;
     private $freeWeekWithdrawals;
-    public $math;
-    private $exchange;
-    private $repository;
+    public MathAbstract $math;
+    private ChangeMoneyInterface $exchange;
+    private UserRepositoryAbstract $repository;
 
 
-    public function __construct(ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository, Math $math)
+    public function __construct(ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository, MathAbstract $math)
     {
         $this->exchange = $exchange;
         $this->repository = $repository;
@@ -33,7 +33,7 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
     }    
 
 
-    public function fee(string $operationDate, $userId, string $userType, string $amount, string $currency)
+    public function fee(string $operationDate, $userId, string $amount, string $currency)
     {          
         $value = $this->getAmmountForFee($operationDate, $userId, $amount, $currency);
         $fee = $this->math->multiply((string) $value, $this->feePercent);

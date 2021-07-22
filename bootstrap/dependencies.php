@@ -17,6 +17,7 @@ use App\Service\FeeCalculation\{
     WithdrawTransaction,
     DepositTransaction
 };
+use App\Service\Math\MathAbstract;
 use App\Service\Math\Math;
 use \GuzzleHttp\Client;
 use function DI\create;
@@ -30,33 +31,35 @@ return [
         get(ChangeMoney::class),
         get(UserRepository::class),
         get(WithdrawTransactionAbstract::class),
-        get(DepositTransactionAbstract::class)
+        get(DepositTransactionAbstract::class),
+        get(MathAbstract::class)
     ),
     FileParserAbstract::class => create(CsvParser::class),
     UserRepositoryAbstract::class => create(UserRepository::class),
     ChangeMoneyInterface::class => create(ChangeMoney::class),
-    WithdrawTransaction::class => create(WithdrawTransaction::class)->constructor(
-        get(ChangeMoney::class),
-        get(UserRepository::class),
-        get(Math::class)
-    ),
-    DepositTransaction::class => create(DepositTransaction::class)->constructor(
-        get(ChangeMoney::class),
-        get(UserRepository::class),
-        get(Math::class)
-    ),
+    // WithdrawTransaction::class => create(WithdrawTransaction::class)->constructor(
+    //     get(ChangeMoney::class),
+    //     get(UserRepository::class),
+    //     get(MathAbstract::class)
+    // ),
+    // DepositTransaction::class => create(DepositTransaction::class)->constructor(
+    //     get(ChangeMoney::class),
+    //     get(UserRepository::class),
+    //     get(MathAbstract::class)
+    // ),
     CsvParser::class => DI\factory(function() {return new CsvParser('transaction.csv');}),
     UserRepository::class => DI\factory(function() {return new UserRepository();}),
+    MathAbstract::class => create(Math::class)->constructor(ConfigManager::getConfig('culculate_scale')),
     Math::class => create(Math::class)->constructor(ConfigManager::getConfig('culculate_scale')),
     ChangeMoney::class => create(ChangeMoney::class)->constructor(new Client(), get(Math::class)),
-    WithdrawTransactionAbstract::class => create(WithdrawTransaction::class)->constructor(
-        get(ChangeMoney::class),
-        get(UserRepository::class),
-        get(Math::class)
-    ),    
-    DepositTransactionAbstract::class => create(DepositTransaction::class)->constructor(
-        get(ChangeMoney::class),
-        get(UserRepository::class),
-        get(Math::class)
-    ),
+    // WithdrawTransactionAbstract::class => create(WithdrawTransaction::class)->constructor(
+    //     get(ChangeMoney::class),
+    //     get(UserRepository::class),
+    //     get(MathAbstract::class)
+    // ),    
+    // DepositTransactionAbstract::class => create(DepositTransaction::class)->constructor(
+    //     get(ChangeMoney::class),
+    //     get(UserRepository::class),
+    //     get(MathAbstract::class)
+    // ),
 ];

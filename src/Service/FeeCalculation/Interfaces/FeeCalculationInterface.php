@@ -8,7 +8,6 @@ interface FeeCalculationInterface
     public function fee(
                         string $operation_date,
                         int $user_id, 
-                        string $user_type, 
                         string $amount,
                         string $currency
                     );

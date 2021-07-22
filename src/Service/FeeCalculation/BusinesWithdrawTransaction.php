@@ -8,7 +8,7 @@ use App\Service\FeeCalculation\Interfaces\FeeCalculationInterface;
 use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
 use App\Repository\UserRepository;
-use App\Service\Math\Math;
+use App\Service\Math\MathAbstract;
 use App\Config\ConfigManager;
 
 
@@ -17,12 +17,12 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
     private $feePercent;
     private $allowedAmount;
     private $freeWeekWithdrawals;
-    private Math $math;
+    private MathAbstract $math;
     private ChangeMoneyInterface $exchange;
     private UserRepositoryAbstract $repository;
 
 
-    public function __construct(ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository, Math $math)
+    public function __construct(ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository, MathAbstract $math)
     {
         $this->exchange = $exchange;
         $this->repository = $repository;
@@ -33,17 +33,17 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
     }
     
 
-    public function fee(string $operation_date, $user_id, string $user_type, string $amount, string $currency)
+    public function fee(string $operationDate, $userId, string $amount, string $currency)
     {          
-        $value = $this->getAmmountForFee($operation_date, $user_id, $amount, $currency);
+        $value = $this->getAmmountForFee($operationDate, $userId, $amount, $currency);
         $fee = $this->math->multiply((string) $value, $this->feePercent);
         return $fee; 
     }
 
 
-    private function getAmmountForFee($operation_date, $user_id, $amount, $currency)
+    private function getAmmountForFee($operationDate, $userId, $amount, $currency)
     {
-        $userWithdrawals = $this->repository->getLastWeekWithdravals($user_id);
+        $userWithdrawals = $this->repository->getLastWeekWithdravals($userId);
         if (is_array($userWithdrawals)) {
             if (count( $userWithdrawals ) > $this->freeWeekWithdrawals) {
                 return $amount;

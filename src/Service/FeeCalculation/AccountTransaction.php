@@ -6,12 +6,12 @@ namespace App\Service\FeeCalculation;
 
 use App\Service\FeeCalculation\{
     Interfaces\AccountTransactionAbstract,
-    Interfaces\WithdrawTransactionAbstract,
-    Interfaces\DepositTransactionAbstract,
-    DepositTransaction,
-    WithdrawTransaction
+    WithdrawTransaction,
+    DepositTransaction
 };
-use App\Config\ConfigManager;
+use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
+use App\Repository\Interfaces\UserRepositoryAbstract;
+use App\Service\Math\MathAbstract;
 
 
 class AccountTransaction extends AccountTransactionAbstract
@@ -20,16 +20,18 @@ class AccountTransaction extends AccountTransactionAbstract
     
 
     public function __construct(
-        $transactionType,
-        WithdrawTransactionAbstract $withdraw,
-        DepositTransactionAbstract $deposit
+        string $transactionType,
+        string $accountType,
+        ChangeMoneyInterface $exchange,
+        UserRepositoryAbstract $repository,
+        MathAbstract $math
     ) {
         switch ($transactionType) {
             case 'withdraw':
-                $this->transaction = $withdraw;
+                $this->transaction = new WithdrawTransaction($accountType, $exchange, $repository, $math);                
                 break;
-            case 'deposit':
-                $this->transaction = $deposit;
+            case 'deposit':                
+                $this->transaction = new DepositTransaction($accountType, $exchange, $repository, $math);          
                 break;            
             default:
                 throw new \Exception('Invalid Transaction Type'); 

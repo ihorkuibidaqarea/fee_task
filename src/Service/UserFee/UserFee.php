@@ -13,7 +13,8 @@ use App\Service\FeeCalculation\{
     AccountTransaction
 };
 use App\Entity\Operaiton;
-use App\Service\Math\Math;
+use App\Service\Math\MathAbstract;
+use App\Config\ConfigManager;
 
 
 class UserFee extends UserFeeAbstract
@@ -23,8 +24,7 @@ class UserFee extends UserFeeAbstract
     private UserRepositoryAbstract $repository;
     private WithdrawTransactionAbstract $withdraw;
     private DepositTransactionAbstract $deposit;
-    private Math $math;
-    private const SCALE = 2;
+    private MathAbstract $math;
    
 
     public function __construct(
@@ -32,14 +32,15 @@ class UserFee extends UserFeeAbstract
         ChangeMoneyInterface $exchange,
         UserRepositoryAbstract $repository,
         WithdrawTransactionAbstract $withdraw,
-        DepositTransactionAbstract $deposit
+        DepositTransactionAbstract $deposit,
+        MathAbstract $math
     ) {
         $this->data = $parser->data();
         $this->exchange = $exchange;
         $this->repository = $repository;
         $this->withdraw = $withdraw;
         $this->deposit = $deposit;
-        $this->math = new Math(self::SCALE);
+        $this->math = $math;
     }
 
 
@@ -56,15 +57,16 @@ class UserFee extends UserFeeAbstract
         try {
             $fee = (new AccountTransaction(
                 $operation->getOperationName(),
-                $this->withdraw,
-                $this->deposit
+                $operation->getAccountType(),
+                $this->exchange,
+                $this->repository,
+                $this->math
             ))
             ->getTransaction()
             ->fee( 
                 $operation->getDate(), 
                 $operation->getUserId(), 
-                $operation->getAccountType(), 
-                $operation->getAmount(), 
+                $operation->getAmount(),
                 $operation->getCurrency()
             );    
 

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\Math;
 
+use App\Service\Math\MathAbstract;
 
-class Math
+
+class Math extends MathAbstract
 {
     private $scale;
 

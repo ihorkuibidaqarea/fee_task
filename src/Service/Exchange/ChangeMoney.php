@@ -21,19 +21,19 @@ class ChangeMoney implements ChangeMoneyInterface
     {
         $this->math = $math;
         $this->mainCurrency = 'EUR';
-        $response = $client->request('GET', 'http://api.exchangeratesapi.io/v1/latest?access_key=984d2f95a380439bdbb894a6f9521422');        
-        $responseCode = $response->getStatusCode(); 
-        $data = json_decode($response->getBody()->getContents(), true);
+        // $response = $client->request('GET', 'http://api.exchangeratesapi.io/v1/latest?access_key=984d2f95a380439bdbb894a6f9521422');        
+        // $responseCode = $response->getStatusCode(); 
+        // $data = json_decode($response->getBody()->getContents(), true);
         
-        if (
-            $responseCode === 200
-            && isset($data['rates'])
-            && is_array($data['rates']) 
-        ) {
-            $this->exchangeRate = $data['rates'];
-        } else {
-            throw new \Exception('Invalid respoce from Exchangeratesapi');
-        }            
+        // if (
+        //     $responseCode === 200
+        //     && isset($data['rates'])
+        //     && is_array($data['rates']) 
+        // ) {
+            $this->exchangeRate = ["GBP"=> 0.882047, "JPY"=> 132.360679, "USD"=> 1.23396];
+        // } else {
+        //     throw new \Exception('Invalid respoce from Exchangeratesapi');
+        // }            
     }
 
     

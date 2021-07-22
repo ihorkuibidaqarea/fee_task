@@ -12,40 +12,34 @@ use App\Service\FeeCalculation\{
 };
 use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
-use App\Service\Math\Math;
+use App\Service\Math\MathAbstract;
 
 
 class WithdrawTransaction extends WithdrawTransactionAbstract implements FeeCalculationInterface
 {
-    private $exchange;
-    private $repository;
-    private $math;
-    private $withdrawalClient;
-
+   private $accountTypeTransaction;
 
     public function __construct(
+        string $accountType,
         ChangeMoneyInterface $exchange,
         UserRepositoryAbstract $repository,
-        Math $math
+        MathAbstract $math
     ) {
-        $this->exchange = $exchange;
-        $this->repository = $repository;
-        $this->math = $math;
-    }        
-       
- 
-    public function fee(string $operation_date, $user_id, string $user_type, string $amount, string $currency)
-    {
-        switch ($user_type) {
+        switch ($accountType) {
             case 'business':
-                $fee = (new BusinesWithdrawTransaction($this->exchange, $this->repository, $this->math))->fee($operation_date, $user_id, $user_type, $amount, $currency);
-                return $fee;                
+                $this->accountTypeTransaction = new BusinesWithdrawTransaction($exchange, $repository, $math);
+                break;                
             case 'private':
-                $fee = (new PrivatWithdrawTransaction($this->exchange, $this->repository, $this->math))->fee($operation_date, $user_id, $user_type, $amount, $currency);
-                return $fee;           
+                $this->accountTypeTransaction = new PrivatWithdrawTransaction($exchange, $repository, $math);
+                break;           
             default:
                 throw new \Exception('Unknown User Type'); 
         }  
-        throw new \Exception('Something went wrong with transaction'); 
+    }        
+       
+ 
+    public function fee(string $operationDate, $userId, string $amount, string $currency)
+    {
+        return $this->accountTypeTransaction->fee($operationDate, $userId, $amount, $currency);              
     }
 }
