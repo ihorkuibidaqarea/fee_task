@@ -50,9 +50,7 @@ class UserFee extends UserFeeAbstract
 
     
     private function calculateFee(Operaiton $operation)
-    {
-        $rep = $this->repository;
-          
+    {          
         try {
             if (!in_array($operation->getCurrency(), $this->allowedCurrency)) {
                 throw new \Exception('Currency not allowed');
@@ -85,11 +83,14 @@ class UserFee extends UserFeeAbstract
     
     private function roundFee(string $fee): string
     {
-        $amountInCents = (integer) $this->math->multiply($fee, '100');
-        $amount = $this->math->divide(
+        if($this->math->compare($fee,'0') < 0){
+            throw new \Exception('Fee Round error');
+        }
+        $amountInCents = ceil($this->math->multiply($fee, '100'));
+        $amount = (float) $this->math->divide(
             (string) $amountInCents,
             '100'
         );
-        return $amount;
+        return (string) number_format($amount, 2, ',', ' ');;
     }
 }
