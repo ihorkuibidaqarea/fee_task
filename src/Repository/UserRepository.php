@@ -12,16 +12,16 @@ class UserRepository extends UserRepositoryAbstract
     public $transactions;
 
 
-    public function getWithdravals($userId)
+    public function getWithdravals(int $userId)
     {
         $userKey = 'users_'.$userId;
         $userTransaction = $this->transactions[$userKey] ?? null;
 
-        if( 
+        if ( 
             $userTransaction 
             && is_array($userTransaction['withdrawals']) 
             && !empty($userTransaction['withdrawals']) 
-        ){           
+        ) {           
             usort($userTransaction['withdrawals'], function ($element1, $element2) {
                 $datetime1 = strtotime($element1->date);
                 $datetime2 = strtotime($element2->date);
@@ -34,7 +34,7 @@ class UserRepository extends UserRepositoryAbstract
     }
 
 
-    public function getLastWeekWithdravals($userId)
+    public function getLastWeekWithdravals(int $userId)
     {
         $allWithdrawals = $this->getWithdravals($userId);
 
@@ -56,7 +56,7 @@ class UserRepository extends UserRepositoryAbstract
     }
 
 
-    public function setUserWithdravals($userId, $transactionDate, $amount, $currency)
+    public function setUserWithdravals(int $userId, string $transactionDate, string $amount, string $currency)
     {
         $userKey = 'users_'. $userId;
         $userTransaction = $this->transactions[$userKey] ?? null;
@@ -66,10 +66,10 @@ class UserRepository extends UserRepositoryAbstract
             $this->transactions[$userKey] = $userTransaction;            
         } else {
             $this->transactions[$userKey] = array( 
-                                                'balance' => 10000,
-                                                'withdrawals' =>array(new Transaction($transactionDate, $amount, $currency)),
-                                                'deposits'=>array()
-                                             );
+                'balance' => 10000,
+                'withdrawals' =>array(new Transaction($transactionDate, $amount, $currency)),
+                'deposits'=>array()
+            );
         }        
         return $this->transactions;
     }
