@@ -80,6 +80,7 @@ class UserFee extends UserFeeAbstract
             return $e->getMessage(); 
         }
     }
+
     
     private function roundFee(string $fee): string
     {
@@ -88,6 +89,6 @@ class UserFee extends UserFeeAbstract
         }
         $amountInCents = (string) ceil($this->math->multiply($fee, '100'));
         $amount = (float) $this->math->divide($amountInCents, '100');
-        return (string) number_format($amount, 2, ',', ' ');;
+        return (string) number_format($amount, 2, ',', ' ');
     }
 }
