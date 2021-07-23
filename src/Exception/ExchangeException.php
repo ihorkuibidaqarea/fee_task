@@ -4,11 +4,12 @@ namespace App\Exception;
 
 use Exception;
 
-class UnknowEnvException extends Exception
+class ExchangeException extends Exception
 {
     public function __construct($message, $code = 0, Throwable $previous = null)
-    {        
+    {
         parent::__construct($message, $code, $previous);
+        $this->message = 'ExchangeException: '. $message;        
     }
 
     

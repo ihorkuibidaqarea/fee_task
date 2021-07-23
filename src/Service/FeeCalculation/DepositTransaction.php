@@ -35,7 +35,6 @@ class DepositTransaction extends DepositTransactionAbstract implements FeeCalcul
 
     public function fee(string $operationDate, int $userId, string $amount, string $currency): string
     {                
-        $fee = $this->math->multiply((string) $amount, $this->feePercent);
-        return $fee;
+        return $this->math->multiply((string) $amount, $this->feePercent);        
     }
 }

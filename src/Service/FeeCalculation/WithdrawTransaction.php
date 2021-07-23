@@ -38,7 +38,7 @@ class WithdrawTransaction extends WithdrawTransactionAbstract implements FeeCalc
     }        
        
  
-    public function fee(string $operationDate, $userId, string $amount, string $currency)
+    public function fee(string $operationDate, int $userId, string $amount, string $currency): string
     {
         return $this->accountTypeTransaction->fee($operationDate, $userId, $amount, $currency);              
     }

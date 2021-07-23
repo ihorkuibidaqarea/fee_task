@@ -33,7 +33,7 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
     }
     
 
-    public function fee(string $operationDate, $userId, string $amount, string $currency)
+    public function fee(string $operationDate, int $userId, string $amount, string $currency): string
     {          
         $value = $this->getAmmountForFee($operationDate, $userId, $amount, $currency);
         $fee = $this->math->multiply((string) $value, $this->feePercent);
@@ -41,7 +41,7 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
     }
 
 
-    private function getAmmountForFee($operationDate, $userId, $amount, $currency)
+    private function getAmmountForFee($operationDate, $userId, $amount, $currency): string
     {
         $userWithdrawals = $this->repository->getLastWeekWithdravals($userId);
         if (is_array($userWithdrawals)) {
@@ -64,7 +64,7 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
     }
 
 
-    private function wthdrawedAmountInEuro(array $userWithdrawals)
+    private function wthdrawedAmountInEuro(array $userWithdrawals): string
     {
         $withdrawed = '0';
         foreach ($userWithdrawals as $withdrawal) {
@@ -79,7 +79,7 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
     }
 
 
-    private function feeDiffernce(array $userWithdrawals, string $amount, string $currency)
+    private function feeDiffernce(array $userWithdrawals, string $amount, string $currency): string
     {        
         $withdrawed = $this->wthdrawedAmountInEuro($userWithdrawals);
         $difference =  $this->math->subtract($this->allowedAmount, $withdrawed);

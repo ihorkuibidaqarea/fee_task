@@ -15,6 +15,7 @@ use App\Service\FeeCalculation\{
 use App\Entity\Operaiton;
 use App\Service\Math\MathAbstract;
 use App\Config\ConfigManager;
+use App\Exception\ExchangeException;
 
 
 class UserFee extends UserFeeAbstract
@@ -23,6 +24,7 @@ class UserFee extends UserFeeAbstract
     private ChangeMoneyInterface $exchange;
     private UserRepositoryAbstract $repository;
     private MathAbstract $math;
+    private array $allowedCurrency;
    
 
     public function __construct(
@@ -35,20 +37,26 @@ class UserFee extends UserFeeAbstract
         $this->exchange = $exchange;
         $this->repository = $repository;
         $this->math = $math;
+        $this->allowedCurrency = ConfigManager::getConfig('allowed_currencies');
     }
 
 
     public function getFee()
     {        
         foreach ($this->data as $operation) {            
-            echo $this->calculateFee($operation).' ';
+            echo $operation->getCurrency() ."   ". $this->calculateFee($operation).' ';
         }      
     }
 
     
     private function calculateFee(Operaiton $operation)
     {
+        $rep = $this->repository;
+          
         try {
+            if (!in_array($operation->getCurrency(), $this->allowedCurrency)) {
+                throw new \Exception('Currency not allowed');
+            }  
             $fee = (new AccountTransaction(
                 $operation->getOperationName(),
                 $operation->getAccountType(),
@@ -57,12 +65,7 @@ class UserFee extends UserFeeAbstract
                 $this->math
             ))
             ->getTransaction()
-            ->fee( 
-                $operation->getDate(), 
-                $operation->getUserId(), 
-                $operation->getAmount(),
-                $operation->getCurrency()
-            );    
+            ->fee($operation->getDate(), $operation->getUserId(), $operation->getAmount(),$operation->getCurrency());
 
             $this->repository->setUserWithdravals(
                 $operation->getUserId(), 
@@ -72,7 +75,10 @@ class UserFee extends UserFeeAbstract
             );
 
             return $this->roundFee($fee);
-        } catch (\Exception $e) {
+
+        } catch (ExchangeException $e) {
+            return $e->getMessage(); 
+        } catch(\Exception $e) {
             return $e->getMessage(); 
         }
     }

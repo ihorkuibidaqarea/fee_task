@@ -33,15 +33,14 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
     }    
 
 
-    public function fee(string $operationDate, $userId, string $amount, string $currency)
+    public function fee(string $operationDate, int $userId, string $amount, string $currency): string
     {          
         $value = $this->getAmmountForFee($operationDate, $userId, $amount, $currency);
-        $fee = $this->math->multiply((string) $value, $this->feePercent);
-        return $fee; 
+        return $this->math->multiply($value, $this->feePercent);
     }
 
 
-    private function getAmmountForFee($operationDate, $userId, $amount, $currency)
+    private function getAmmountForFee(string $operationDate, int $userId, string $amount, string $currency): string
     {
         $userWithdrawals = $this->repository->getLastWeekWithdravals($userId);
         if (is_array($userWithdrawals)) {
@@ -55,7 +54,7 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
         $allowedAmountInCurrency = $this->exchange->moneyExchange($this->allowedAmount, $currency);
         if ($allowedAmountInCurrency->success) {
             $FirstRequestAllowedAmount = $this->math->subtract($amount, $allowedAmountInCurrency->amount);
-            if ($this->math->compare((string) $FirstRequestAllowedAmount, '0') > 0) {
+            if ($this->math->compare($FirstRequestAllowedAmount, '0') > 0) {
                 return $FirstRequestAllowedAmount; 
             }            
             return '0';
@@ -64,13 +63,13 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
     }
 
 
-    private function wthdrawedAmountInEuro($userWithdrawals)
+    private function wthdrawedAmountInEuro(array $userWithdrawals): string
     {
         $withdrawed = '0';
         foreach ($userWithdrawals as $withdrawal) {
             $withdravedInEuro = $this->exchange->moneyExchange($withdrawal->amount, $withdrawal->currency);
             if ($withdravedInEuro->success) {
-                $withdrawed = $this->math->add((string) $withdrawed, (string) $withdravedInEuro->amount);
+                $withdrawed = $this->math->add($withdrawed, $withdravedInEuro->amount);
             } else {
                 throw new \Exception('Exchange error');
             }            
@@ -79,18 +78,18 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
     }
 
 
-    private function feeDiffernce($userWithdrawals, $amount, $currency)
+    private function feeDiffernce(array $userWithdrawals, string $amount, string $currency): string
     {        
         $withdrawed = $this->wthdrawedAmountInEuro($userWithdrawals);
-        $difference =  $this->math->subtract($this->allowedAmount, (string) $withdrawed);
+        $difference =  $this->math->subtract($this->allowedAmount, $withdrawed);
         if ($this->math->compare( $difference, '0') <= 0) {
             return $amount;
         }
 
         $allowedInCurrency = $this->exchange->moneyExchange($difference, $currency);
         if ($allowedInCurrency->success) {
-            $forFee =  $this->math->subtract((string) $amount, (string) $allowedInCurrency->amount);
-            if ($this->math->compare( $forFee, '0') <= 0) {
+            $forFee =  $this->math->subtract($amount, $allowedInCurrency->amount);
+            if ($this->math->compare($forFee, '0') <= 0) {
                 return '0';        
             } 
             return $forFee;            

@@ -9,6 +9,10 @@ use App\Service\Math\MathAbstract;
 
 abstract class DepositTransactionAbstract
 {
-    public function __construct(string $accountType, ChangeMoneyInterface $exchange, UserRepositoryAbstract $repository, MathAbstract $math)
-    {}
+    public function __construct(
+        string $accountType,
+        ChangeMoneyInterface $exchange,
+        UserRepositoryAbstract $repository,
+        MathAbstract $math
+    ) {}
 }
