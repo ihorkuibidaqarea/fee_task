@@ -45,7 +45,7 @@ class UserFee extends UserFeeAbstract
     public function getFee()
     {        
         foreach ($this->data as $operation) {            
-            echo $this->calculateFee($operation) .' | ';
+            echo $this->calculateFee($operation);
         }      
     }
 

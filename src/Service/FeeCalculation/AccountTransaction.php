@@ -6,6 +6,7 @@ namespace App\Service\FeeCalculation;
 
 use App\Service\FeeCalculation\{
     Interfaces\AccountTransactionAbstract,
+    Interfaces\FeeCalculationInterface,
     WithdrawTransaction,
     BusinesWithdrawTransaction,
     PrivatWithdrawTransaction,
@@ -19,10 +20,11 @@ use App\Service\Math\MathAbstract;
 class AccountTransaction extends AccountTransactionAbstract
 {
     private $transaction;
-    private $transactionType;
-    private $accountType;
-    private $privateTransaction;
-    private $depositTransaction;
+    private string $transactionType;
+    private string $accountType;
+    private FeeCalculationInterface $privateWithdraw;
+    private FeeCalculationInterface $businesWithdraw;
+    private FeeCalculationInterface $deposit;
     
 
     public function __construct(

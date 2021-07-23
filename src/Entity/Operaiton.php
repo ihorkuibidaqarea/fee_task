@@ -6,15 +6,15 @@ namespace App\Entity;
 
 class Operaiton
 {
-    public $date;
+    public string $date;
     public $userId;
-    public $accountType;
-    public $operation;
-    public $amount;
-    public $currency;
+    public string $accountType;
+    public string $operation;
+    public string $amount;
+    public string $currency;
      
 
-    public function __construct($date, $userId, $accountType, $operation, $amount, $currency)
+    public function __construct(string $date, $userId, string $accountType, string $operation, string $amount, string $currency)
     {
         $this->date = $date;
         $this->userId = $userId;
@@ -25,36 +25,36 @@ class Operaiton
     }
 
 
-    public function getDate()
+    public function getDate(): string
     {
         return $this->date;
     }
 
 
-    public function getUserId()
+    public function getUserId(): int
     {
         return (integer) $this->userId;
     }
 
 
-    public function getAccountType()
+    public function getAccountType(): string
     {
         return $this->accountType;
     }
 
-    public function getOperationName()
+    public function getOperationName(): string
     {
         return $this->operation;
     }
 
 
-    public function getAmount()
+    public function getAmount(): string
     {
         return $this->amount;
     }
 
 
-    public function getCurrency()
+    public function getCurrency(): string
     {
         return $this->currency;
     }

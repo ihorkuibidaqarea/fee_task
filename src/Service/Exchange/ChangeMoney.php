@@ -81,7 +81,7 @@ class ChangeMoney implements ChangeMoneyInterface
     protected function isCurrencyAllowed(string $currency): void
     {
         if (!in_array($currency, $this->allowedCurrency)) {
-            throw new \Exception('Currency not allowed');
+            throw new ExchangeException('Currency not allowed');
         } 
     }
 }

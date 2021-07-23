@@ -6,9 +6,9 @@ namespace App\Entity;
 
 class Transaction
 {
-    public $date;
-    public $amount;
-    public $currency;
+    public string $date;
+    public string $amount;
+    public string $currency;
      
 
     public function __construct($date, $amount, $currency)
