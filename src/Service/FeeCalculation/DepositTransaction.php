@@ -25,7 +25,7 @@ class DepositTransaction extends DepositTransactionAbstract implements FeeCalcul
         ChangeMoneyInterface $exchange,
         UserRepositoryAbstract $repository,
         MathAbstract $math
-    ) {        
+    ) {
         $this->exchange = $exchange;
         $this->repository = $repository;
         $this->feePercent = ConfigManager::getConfig('deposit_fee');
