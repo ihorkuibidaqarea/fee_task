@@ -37,19 +37,19 @@ class UserFee extends UserFeeAbstract
         $this->exchange = $exchange;
         $this->repository = $repository;
         $this->math = $math;
-        $this->allowedCurrency = ConfigManager::getConfig('allowed_currencies');
+        $this->allowedCurrency = ConfigManager::get('allowed_currencies');
     }
 
 
     public function getFee()
     {        
         foreach ($this->data as $operation) {            
-            echo $this->calculateFee($operation);
+            echo $this->calculateFee($operation) .' ';
         }      
     }
 
     
-    private function calculateFee(Operaiton $operation)
+    private function calculateFee(Operaiton $operation): string
     {          
         try {
             if (!in_array($operation->getCurrency(), $this->allowedCurrency)) {

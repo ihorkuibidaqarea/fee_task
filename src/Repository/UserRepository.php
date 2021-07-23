@@ -56,7 +56,7 @@ class UserRepository extends UserRepositoryAbstract
     }
 
 
-    public function setUserWithdravals(int $userId, string $transactionDate, string $amount, string $currency)
+    public function setUserWithdravals(int $userId, string $transactionDate, string $amount, string $currency): void
     {
         $userKey = 'users_'. $userId;
         $userTransaction = $this->transactions[$userKey] ?? null;
@@ -71,6 +71,5 @@ class UserRepository extends UserRepositoryAbstract
                 'deposits'=>array()
             );
         }        
-        return $this->transactions;
     }
 }

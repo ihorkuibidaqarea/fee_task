@@ -27,21 +27,20 @@ class BusinesWithdrawTransaction implements FeeCalculationInterface
         $this->exchange = $exchange;
         $this->repository = $repository;
         $this->math = $math;
-        $this->feePercent = ConfigManager::getConfig('busines_withdraw_fee');
-        $this->allowedAmount = ConfigManager::getConfig('week_allowed_withdraw_amount');
-        $this->freeWeekWithdrawals = ConfigManager::getConfig('week_allowed_withdraw_atemps');
+        $this->feePercent = ConfigManager::get('busines_withdraw_fee');
+        $this->allowedAmount = ConfigManager::get('week_allowed_withdraw_amount');
+        $this->freeWeekWithdrawals = ConfigManager::get('week_allowed_withdraw_atemps');
     }
     
 
     public function fee(string $operationDate, int $userId, string $amount, string $currency): string
     {          
         $value = $this->getAmmountForFee($operationDate, $userId, $amount, $currency);
-        $fee = $this->math->multiply((string) $value, $this->feePercent);
-        return $fee; 
+        return $this->math->multiply((string) $value, $this->feePercent);
     }
 
 
-    private function getAmmountForFee($operationDate, $userId, $amount, $currency): string
+    private function getAmmountForFee(string $operationDate, int $userId, string $amount, string $currency): string
     {
         $userWithdrawals = $this->repository->getLastWeekWithdravals($userId);
         if (is_array($userWithdrawals)) {

@@ -7,6 +7,8 @@ namespace App\Service\FeeCalculation;
 use App\Service\FeeCalculation\{
     Interfaces\AccountTransactionAbstract,
     WithdrawTransaction,
+    BusinesWithdrawTransaction,
+    PrivatWithdrawTransaction,
     DepositTransaction
 };
 use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
@@ -17,6 +19,10 @@ use App\Service\Math\MathAbstract;
 class AccountTransaction extends AccountTransactionAbstract
 {
     private $transaction;
+    private $transactionType;
+    private $accountType;
+    private $privateTransaction;
+    private $depositTransaction;
     
 
     public function __construct(
@@ -26,21 +32,30 @@ class AccountTransaction extends AccountTransactionAbstract
         UserRepositoryAbstract $repository,
         MathAbstract $math
     ) {
-        switch ($transactionType) {
-            case 'withdraw':
-                $this->transaction = new WithdrawTransaction($accountType, $exchange, $repository, $math);                
-                break;
-            case 'deposit':                
-                $this->transaction = new DepositTransaction($accountType, $exchange, $repository, $math);          
-                break;            
-            default:
-                throw new \Exception('Invalid Transaction Type'); 
-        }
+        $this->transactionType = $transactionType;
+        $this->accountType = $accountType;
+        $this->privateWithdraw = new PrivatWithdrawTransaction($exchange, $repository, $math);
+        $this->businesWithdraw = new BusinesWithdrawTransaction($exchange, $repository, $math);                
+        $this->deposit = new DepositTransaction($exchange, $repository, $math);
     }
 
 
     public function getTransaction()
     {
+        switch ($this->transactionType) {
+            case 'withdraw':
+                if ($this->accountType === 'business') {
+                    $this->transaction = $this->businesWithdraw;
+                } else if ($this->accountType === 'private') {
+                    $this->transaction = $this->privateWithdraw;
+                }               
+                break;
+            case 'deposit':                
+                $this->transaction = $this->deposit;
+                break;          
+            default:
+                throw new \Exception('Invalid Transaction Type'); 
+        }
         return $this->transaction;
     }     
 }

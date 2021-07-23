@@ -21,14 +21,13 @@ class DepositTransaction extends DepositTransactionAbstract implements FeeCalcul
 
 
     public function __construct(
-        string $accountType,
         ChangeMoneyInterface $exchange,
         UserRepositoryAbstract $repository,
         MathAbstract $math
     ) {
         $this->exchange = $exchange;
         $this->repository = $repository;
-        $this->feePercent = ConfigManager::getConfig('deposit_fee');
+        $this->feePercent = ConfigManager::get('deposit_fee');
         $this->math = $math;
     }
 

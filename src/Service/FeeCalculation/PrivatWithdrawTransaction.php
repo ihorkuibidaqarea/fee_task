@@ -27,9 +27,9 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
         $this->exchange = $exchange;
         $this->repository = $repository;
         $this->math = $math;
-        $this->feePercent = ConfigManager::getConfig('privat_withdraw_fee');
-        $this->allowedAmount = ConfigManager::getConfig('week_allowed_withdraw_amount');
-        $this->freeWeekWithdrawals = ConfigManager::getConfig('week_allowed_withdraw_atemps');
+        $this->feePercent = ConfigManager::get('privat_withdraw_fee');
+        $this->allowedAmount = ConfigManager::get('week_allowed_withdraw_amount');
+        $this->freeWeekWithdrawals = ConfigManager::get('week_allowed_withdraw_atemps');
     }    
 
 

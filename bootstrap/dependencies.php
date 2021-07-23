@@ -7,16 +7,6 @@ use App\Service\UserFee\{UserFeeAbstract, UserFee};
 use App\Service\FileParser\{FileParserAbstract, CsvParser};
 use App\Repository\{Interfaces\UserRepositoryAbstract, UserRepository};
 use App\Service\Exchange\{Interfaces\ChangeMoneyInterface, ChangeMoney};
-use App\Service\FeeCalculation\{
-    Interfaces\AccountTransactionAbstract,
-    Interfaces\DepositTransactionAbstract,
-    Interfaces\WithdrawTransactionAbstract,
-    // BusinesWithdrawTransaction,
-    // PrivatWithdrawTransaction,
-    AccountTransaction,
-    WithdrawTransaction,
-    DepositTransaction
-};
 use App\Service\Math\MathAbstract;
 use App\Service\Math\Math;
 use \GuzzleHttp\Client;
@@ -32,32 +22,20 @@ return [
         get(UserRepository::class),
         get(MathAbstract::class)
     ),
+
     FileParserAbstract::class => create(CsvParser::class),
+
     UserRepositoryAbstract::class => create(UserRepository::class),
-    ChangeMoneyInterface::class => create(ChangeMoney::class),
-    // WithdrawTransaction::class => create(WithdrawTransaction::class)->constructor(
-    //     get(ChangeMoney::class),
-    //     get(UserRepository::class),
-    //     get(MathAbstract::class)
-    // ),
-    // DepositTransaction::class => create(DepositTransaction::class)->constructor(
-    //     get(ChangeMoney::class),
-    //     get(UserRepository::class),
-    //     get(MathAbstract::class)
-    // ),
+
+    ChangeMoneyInterface::class => create(ChangeMoney::class),    
+
     CsvParser::class => DI\factory(function() {return new CsvParser('transaction.csv');}),
+
     UserRepository::class => DI\factory(function() {return new UserRepository();}),
-    MathAbstract::class => create(Math::class)->constructor(ConfigManager::getConfig('culculate_scale')),
-    Math::class => create(Math::class)->constructor(ConfigManager::getConfig('culculate_scale')),
-    ChangeMoney::class => create(ChangeMoney::class)->constructor(new Client(), get(Math::class)),
-    // WithdrawTransactionAbstract::class => create(WithdrawTransaction::class)->constructor(
-    //     get(ChangeMoney::class),
-    //     get(UserRepository::class),
-    //     get(MathAbstract::class)
-    // ),    
-    // DepositTransactionAbstract::class => create(DepositTransaction::class)->constructor(
-    //     get(ChangeMoney::class),
-    //     get(UserRepository::class),
-    //     get(MathAbstract::class)
-    // ),
+
+    MathAbstract::class => create(Math::class)->constructor(ConfigManager::get('culculate_scale')),
+
+    Math::class => create(Math::class)->constructor(ConfigManager::get('culculate_scale')),
+
+    ChangeMoney::class => create(ChangeMoney::class)->constructor(new Client(), get(Math::class)),    
 ];
