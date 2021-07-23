@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
 use App\Config\ConfigManager;
+use App\Exception\ExchangeException;
 
 
 class PrivatWithdrawTransaction implements FeeCalculationInterface
@@ -71,7 +72,7 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
             if ($withdravedInEuro->success) {
                 $withdrawed = $this->math->add($withdrawed, $withdravedInEuro->amount);
             } else {
-                throw new \Exception('Exchange error');
+                throw new ExchangeException('Exchange error');
             }            
         }
         return $withdrawed;
@@ -94,6 +95,6 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
             } 
             return $forFee;            
         } 
-        throw new \Exception('Exchange error');
+        throw new ExchangeException('Exchange error');
     }
 }

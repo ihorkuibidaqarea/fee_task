@@ -12,7 +12,7 @@ class ConfigManager
     private function __construct() {
         
     }
-    // изменить
+
 
     public static function get(string $key)
     {
@@ -21,7 +21,7 @@ class ConfigManager
             $config = include __DIR__ .'/../../config/config.php';
             self::$instance->config = $config;
         }
-
+        
         if (is_array(self::$instance->config) && isset(self::$instance->config[$key])) {
             return self::$instance->config[$key];
         }

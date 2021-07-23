@@ -9,7 +9,7 @@ abstract class FileParserAbstract
     private $delimiter;
 
     
-    public function __construct($fileName, $delimiter = ',')
+    public function __construct(string $fileName, string $delimiter = ',')
     {
         $this->fileName = $fileName;
         $this->delimiter = $delimiter;

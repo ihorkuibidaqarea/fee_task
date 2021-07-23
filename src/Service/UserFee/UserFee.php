@@ -16,6 +16,7 @@ use App\Entity\Operaiton;
 use App\Service\Math\MathAbstract;
 use App\Config\ConfigManager;
 use App\Exception\ExchangeException;
+use App\Exception\ConfigException;
 
 
 class UserFee extends UserFeeAbstract
@@ -44,7 +45,7 @@ class UserFee extends UserFeeAbstract
     public function getFee()
     {        
         foreach ($this->data as $operation) {            
-            echo $this->calculateFee($operation) .' ';
+            echo $this->calculateFee($operation) .' | ';
         }      
     }
 
@@ -74,10 +75,8 @@ class UserFee extends UserFeeAbstract
 
             return $this->roundFee($fee);
 
-        } catch (ExchangeException $e) {
-            return $e->getMessage(); 
-        } catch(\Exception $e) {
-            return $e->getMessage(); 
+        } catch (ConfigException | ExchangeException | Exception $e) {
+            echo $e->getMessage(); 
         }
     }
 

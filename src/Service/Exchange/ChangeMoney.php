@@ -41,7 +41,7 @@ class ChangeMoney implements ChangeMoneyInterface
     }
 
     
-    private function getExchangeRate(string $currency)
+    private function getExchangeRate(string $currency): string
     {  
         if (isset($this->exchangeRate[$currency])) {
             return (string) $this->exchangeRate[$currency];
@@ -50,7 +50,7 @@ class ChangeMoney implements ChangeMoneyInterface
     }
     
 
-    public function moneyExchange(string $amount, string $currency)
+    public function moneyExchange(string $amount, string $currency): ExchangeResponse
     {            
         if ($this->mainCurrency === $currency) {
             return new ExchangeResponse($amount);
@@ -64,7 +64,7 @@ class ChangeMoney implements ChangeMoneyInterface
     }
 
 
-    public function reverseMoneyExchange(string $amount, string $currency)
+    public function reverseMoneyExchange(string $amount, string $currency): ExchangeResponse
     {            
         if ($this->mainCurrency === $currency) {
             return new ExchangeResponse($amount);
@@ -78,7 +78,7 @@ class ChangeMoney implements ChangeMoneyInterface
     }
 
 
-    protected function isCurrencyAllowed(string $currency)
+    protected function isCurrencyAllowed(string $currency): void
     {
         if (!in_array($currency, $this->allowedCurrency)) {
             throw new \Exception('Currency not allowed');
