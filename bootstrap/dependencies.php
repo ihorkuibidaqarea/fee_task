@@ -30,8 +30,6 @@ return [
         get(CsvParser::class),
         get(ChangeMoney::class),
         get(UserRepository::class),
-        get(WithdrawTransactionAbstract::class),
-        get(DepositTransactionAbstract::class),
         get(MathAbstract::class)
     ),
     FileParserAbstract::class => create(CsvParser::class),

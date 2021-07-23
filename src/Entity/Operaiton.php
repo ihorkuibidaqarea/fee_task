@@ -33,7 +33,7 @@ class Operaiton
 
     public function getUserId()
     {
-        return $this->userId;
+        return (integer) $this->userId;
     }
 
 

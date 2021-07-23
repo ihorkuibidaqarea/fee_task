@@ -22,8 +22,6 @@ class UserFee extends UserFeeAbstract
     private $data;
     private ChangeMoneyInterface $exchange;
     private UserRepositoryAbstract $repository;
-    private WithdrawTransactionAbstract $withdraw;
-    private DepositTransactionAbstract $deposit;
     private MathAbstract $math;
    
 
@@ -31,15 +29,11 @@ class UserFee extends UserFeeAbstract
         FileParserAbstract $parser,
         ChangeMoneyInterface $exchange,
         UserRepositoryAbstract $repository,
-        WithdrawTransactionAbstract $withdraw,
-        DepositTransactionAbstract $deposit,
         MathAbstract $math
     ) {
         $this->data = $parser->data();
         $this->exchange = $exchange;
         $this->repository = $repository;
-        $this->withdraw = $withdraw;
-        $this->deposit = $deposit;
         $this->math = $math;
     }
 
