@@ -83,14 +83,11 @@ class UserFee extends UserFeeAbstract
     
     private function roundFee(string $fee): string
     {
-        if($this->math->compare($fee,'0') < 0){
+        if ($this->math->compare($fee,'0') < 0) {
             throw new \Exception('Fee Round error');
         }
-        $amountInCents = ceil($this->math->multiply($fee, '100'));
-        $amount = (float) $this->math->divide(
-            (string) $amountInCents,
-            '100'
-        );
+        $amountInCents = (string) ceil($this->math->multiply($fee, '100'));
+        $amount = (float) $this->math->divide($amountInCents, '100');
         return (string) number_format($amount, 2, ',', ' ');;
     }
 }
