@@ -15,8 +15,8 @@ use App\Service\FeeCalculation\{
 use App\Entity\Operaiton;
 use App\Service\Math\MathAbstract;
 use App\Config\ConfigManager;
-use App\Exception\ExchangeException;
-use App\Exception\ConfigException;
+// use App\Exception\ExchangeException;
+// use App\Exception\ConfigException;
 
 
 class UserFee extends UserFeeAbstract
@@ -42,11 +42,13 @@ class UserFee extends UserFeeAbstract
     }
 
 
-    public function getFee()
-    {        
+    public function getFee(): array
+    {   
+        $data = [];
         foreach ($this->data as $operation) {            
-            echo $this->calculateFee($operation);
-        }      
+            $data[] = $this->calculateFee($operation);
+        }
+        return $data;    
     }
 
     
@@ -64,7 +66,7 @@ class UserFee extends UserFeeAbstract
                 $this->math
             ))
             ->getTransaction()
-            ->fee($operation->getDate(), $operation->getUserId(), $operation->getAmount(),$operation->getCurrency());
+            ->fee($operation->getDate(), $operation->getUserId(), $operation->getAmount(), $operation->getCurrency());
 
             $this->repository->setUserWithdravals(
                 $operation->getUserId(), 
@@ -75,7 +77,7 @@ class UserFee extends UserFeeAbstract
 
             return $this->roundFee($fee);
 
-        } catch (ConfigException | ExchangeException | Exception $e) {
+        } catch (Exception $e) {
             echo $e->getMessage(); 
         }
     }

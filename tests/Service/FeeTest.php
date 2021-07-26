@@ -33,7 +33,7 @@ class FeeTest extends TestCase
      * @dataProvider dataProviderForFeeTesting
      */
 
-    public function testFee(array $data, string $expectation)
+    public function testFee(array $data, array $expectation)
     {
         $CsvParserMock = \Mockery::mock('App\Service\FileParser\CsvParser', 'App\Service\FileParser\FileParserAbstract');
         $CsvParserMock->shouldReceive('data')->andReturn($data);
