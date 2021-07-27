@@ -23,8 +23,8 @@ class ChangeMoney implements ChangeMoneyInterface
     public function __construct(Client $client, MathAbstract $math)
     {
         $this->math = $math;
-        $this->mainCurrency = ConfigManager::getConfig('main_currency');
-        $this->allowedCurrency = ConfigManager::getConfig('allowed_currencies');
+        $this->mainCurrency = ConfigManager::get('main_currency');
+        $this->allowedCurrency = ConfigManager::get('allowed_currencies');
         // $response = $client->request('GET', 'http://api.exchangeratesapi.io/v1/latest?access_key=984d2f95a380439bdbb894a6f9521422');        
         // $responseCode = $response->getStatusCode(); 
         // $data = json_decode($response->getBody()->getContents(), true);
@@ -41,49 +41,47 @@ class ChangeMoney implements ChangeMoneyInterface
     }
 
     
-    private function getExchangeRate(string $currency)
+    private function getExchangeRate(string $currency): string
     {  
         if (isset($this->exchangeRate[$currency])) {
             return (string) $this->exchangeRate[$currency];
         }
-        throw new \ExchangeException('Currency not found');
+        throw new ExchangeException('Currency not found');
     }
     
 
-    public function moneyExchange(string $amount, string $currency)
+    public function moneyExchange(string $amount, string $currency): ExchangeResponse
     {            
         if ($this->mainCurrency === $currency) {
             return new ExchangeResponse($amount);
-        } else {
-            $this->isCurrencyAllowed($currency);
-            $rate = $this->getExchangeRate($currency);
-            $exchange =  $this->math->multiply($amount, $rate);                
-            if ($this->math->compare($exchange, '0') > 0) {                        
-                return new ExchangeResponse($exchange);
-            }                          
+        } 
+        $this->isCurrencyAllowed($currency);
+        $rate = $this->getExchangeRate($currency);
+        $exchange =  $this->math->multiply($amount, $rate);                
+        if ($this->math->compare($exchange, '0') > 0) {                        
+            return new ExchangeResponse($exchange);
         }
     }
 
 
-    public function reverseMoneyExchange(string $amount, string $currency)
+    public function reverseMoneyExchange(string $amount, string $currency): ExchangeResponse
     {            
         if ($this->mainCurrency === $currency) {
             return new ExchangeResponse($amount);
-        } else {
-            $this->isCurrencyAllowed($currency);
-            $rate = $this->getExchangeRate($currency);
-            $exchange = $this->math->divide($amount, $rate);                    
-            if ($this->math->compare($exchange, '0') > 0) {                        
-                return new ExchangeResponse($exchange);
-            }                        
+        }
+        $this->isCurrencyAllowed($currency);
+        $rate = $this->getExchangeRate($currency);
+        $exchange = $this->math->divide($amount, $rate);                    
+        if ($this->math->compare($exchange, '0') > 0) {                        
+            return new ExchangeResponse($exchange);
         }
     }
 
 
-    protected function isCurrencyAllowed(string $currency)
+    protected function isCurrencyAllowed(string $currency): void
     {
         if (!in_array($currency, $this->allowedCurrency)) {
-            throw new \Exception('Currency not allowed');
+            throw new ExchangeException('Currency not allowed');
         } 
     }
 }

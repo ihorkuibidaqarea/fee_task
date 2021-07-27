@@ -10,13 +10,14 @@ use App\Repository\UserRepository;
 use App\Service\Exchange\Interfaces\ChangeMoneyInterface;
 use App\Repository\Interfaces\UserRepositoryAbstract;
 use App\Config\ConfigManager;
+use App\Exception\ExchangeException;
 
 
 class PrivatWithdrawTransaction implements FeeCalculationInterface
 {
-    private $feePercent;
-    private $allowedAmount;
-    private $freeWeekWithdrawals;
+    private string $feePercent;
+    private string $weekAllowedWithdrawAmount;
+    private int $weekAllowedWithdrawAtemps;
     public MathAbstract $math;
     private ChangeMoneyInterface $exchange;
     private UserRepositoryAbstract $repository;
@@ -27,9 +28,9 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
         $this->exchange = $exchange;
         $this->repository = $repository;
         $this->math = $math;
-        $this->feePercent = ConfigManager::getConfig('privat_withdraw_fee');
-        $this->allowedAmount = ConfigManager::getConfig('week_allowed_withdraw_amount');
-        $this->freeWeekWithdrawals = ConfigManager::getConfig('week_allowed_withdraw_atemps');
+        $this->feePercent = ConfigManager::get('privat_withdraw_fee');
+        $this->weekAllowedWithdrawAmount = ConfigManager::get('week_allowed_withdraw_amount');
+        $this->weekAllowedWithdrawAtemps = ConfigManager::get('week_allowed_withdraw_atemps');
     }    
 
 
@@ -44,14 +45,14 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
     {
         $userWithdrawals = $this->repository->getLastWeekWithdravals($userId);
         if (is_array($userWithdrawals)) {
-            if (count($userWithdrawals) > $this->freeWeekWithdrawals) {
+            if (count($userWithdrawals) > $this->weekAllowedWithdrawAtemps) {
                 return $amount;
             } 
             $amountForFee = $this->feeDiffernce($userWithdrawals, $amount, $currency);
             return $amountForFee;             
         }  
 
-        $allowedAmountInCurrency = $this->exchange->moneyExchange($this->allowedAmount, $currency);
+        $allowedAmountInCurrency = $this->exchange->moneyExchange($this->weekAllowedWithdrawAmount, $currency);
         if ($allowedAmountInCurrency->success) {
             $FirstRequestAllowedAmount = $this->math->subtract($amount, $allowedAmountInCurrency->amount);
             if ($this->math->compare($FirstRequestAllowedAmount, '0') > 0) {
@@ -71,7 +72,7 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
             if ($withdravedInEuro->success) {
                 $withdrawed = $this->math->add($withdrawed, $withdravedInEuro->amount);
             } else {
-                throw new \Exception('Exchange error');
+                throw new ExchangeException('Exchange error');
             }            
         }
         return $withdrawed;
@@ -81,7 +82,7 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
     private function feeDiffernce(array $userWithdrawals, string $amount, string $currency): string
     {        
         $withdrawed = $this->wthdrawedAmountInEuro($userWithdrawals);
-        $difference =  $this->math->subtract($this->allowedAmount, $withdrawed);
+        $difference =  $this->math->subtract($this->weekAllowedWithdrawAmount, $withdrawed);
         if ($this->math->compare( $difference, '0') <= 0) {
             return $amount;
         }
@@ -94,6 +95,6 @@ class PrivatWithdrawTransaction implements FeeCalculationInterface
             } 
             return $forFee;            
         } 
-        throw new \Exception('Exchange error');
+        throw new ExchangeException('Exchange error');
     }
 }

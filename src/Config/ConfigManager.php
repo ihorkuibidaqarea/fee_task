@@ -2,6 +2,8 @@
 
 namespace App\Config;
 
+use App\Exception\ConfigException;
+
 class ConfigManager
 {
     private static $instance;
@@ -11,17 +13,18 @@ class ConfigManager
         
     }
 
-    public static function getConfig(string $key)
+
+    public static function get(string $key)
     {
         if (self::$instance === null) {
             self::$instance = new self();
             $config = include __DIR__ .'/../../config/config.php';
             self::$instance->config = $config;
         }
-
+        
         if (is_array(self::$instance->config) && isset(self::$instance->config[$key])) {
             return self::$instance->config[$key];
         }
-        throw new \Exception('Config data with '. $key .' not Found');
+        throw new ConfigException('Config data with '. $key .' not Found');
     }
 }
